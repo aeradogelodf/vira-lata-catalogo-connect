@@ -15,8 +15,8 @@ export function ProductCard({
   brand,
 }: {
   product: Product;
-  category?: Category;
-  brand?: Brand;
+  category?: Category | undefined;
+  brand?: Brand | undefined;
 }) {
   const promo = isPromotion(product);
   const price = product.promoPrice ?? product.price;
