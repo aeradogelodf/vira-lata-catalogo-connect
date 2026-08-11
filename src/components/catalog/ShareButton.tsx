@@ -11,7 +11,7 @@ export function ShareButton({ title, text }: { title: string; text?: string }) {
     const url = typeof window !== "undefined" ? window.location.href : "";
     try {
       if (typeof navigator !== "undefined" && navigator.share) {
-        await navigator.share({ title, text, url });
+        await navigator.share(text ? { title, text, url } : { title, url });
         return;
       }
       await navigator.clipboard.writeText(url);
