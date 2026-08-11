@@ -8,9 +8,9 @@ export function ProductGallery({ product }: { product: Product }) {
   const images = [...product.images].sort((a, b) => a.position - b.position);
   const [index, setIndex] = useState(0);
   const [zoom, setZoom] = useState(false);
-  const current = images[index];
+  const current = images[index] ?? images[0];
 
-  if (images.length === 0) {
+  if (images.length === 0 || !current) {
     return (
       <div
         className="surface-card grid aspect-square w-full place-items-center text-muted-foreground"
