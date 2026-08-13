@@ -10,7 +10,6 @@ import { ShareButton } from "@/components/catalog/ShareButton";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { STORE } from "@/config/store";
-import { fetchProductBySlug } from "@/data/catalog";
 import { catalogQueries } from "@/lib/catalog-queries";
 import { formatPrice, isPromotion, relatedProducts } from "@/lib/catalog";
 import { whatsappMessages, whatsappUrl } from "@/lib/whatsapp";
@@ -19,7 +18,9 @@ const SITE = "https://vira-lata-catalogo-connect.lovable.app";
 
 export const Route = createFileRoute("/produto/$slug")({
   loader: async ({ params, context }) => {
-    const product = await fetchProductBySlug(params.slug);
+    const product = await context.queryClient.ensureQueryData(
+      catalogQueries.product(params.slug),
+    );
     if (!product) throw notFound();
     await Promise.all([
       context.queryClient.ensureQueryData(catalogQueries.products()),
