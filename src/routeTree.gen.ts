@@ -13,6 +13,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as CatalogoRouteImport } from './routes/catalogo'
 import { Route as ContatoRouteImport } from './routes/contato'
 import { Route as FavoritosRouteImport } from './routes/favoritos'
+import { Route as LoginRouteImport } from './routes/login'
 import { Route as ServicosRouteImport } from './routes/servicos'
 import { Route as ProdutoSlugRouteImport } from './routes/produto.$slug'
 
@@ -36,6 +37,11 @@ const FavoritosRoute = FavoritosRouteImport.update({
   path: '/favoritos',
   getParentRoute: () => rootRouteImport,
 } as any)
+const LoginRoute = LoginRouteImport.update({
+  id: '/login',
+  path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ServicosRoute = ServicosRouteImport.update({
   id: '/servicos',
   path: '/servicos',
@@ -52,6 +58,7 @@ export interface FileRoutesByFullPath {
   '/catalogo': typeof CatalogoRoute
   '/contato': typeof ContatoRoute
   '/favoritos': typeof FavoritosRoute
+  '/login': typeof LoginRoute
   '/servicos': typeof ServicosRoute
   '/produto/$slug': typeof ProdutoSlugRoute
 }
@@ -60,6 +67,7 @@ export interface FileRoutesByTo {
   '/catalogo': typeof CatalogoRoute
   '/contato': typeof ContatoRoute
   '/favoritos': typeof FavoritosRoute
+  '/login': typeof LoginRoute
   '/servicos': typeof ServicosRoute
   '/produto/$slug': typeof ProdutoSlugRoute
 }
@@ -69,6 +77,7 @@ export interface FileRoutesById {
   '/catalogo': typeof CatalogoRoute
   '/contato': typeof ContatoRoute
   '/favoritos': typeof FavoritosRoute
+  '/login': typeof LoginRoute
   '/servicos': typeof ServicosRoute
   '/produto/$slug': typeof ProdutoSlugRoute
 }
@@ -79,6 +88,7 @@ export interface FileRouteTypes {
     | '/catalogo'
     | '/contato'
     | '/favoritos'
+    | '/login'
     | '/servicos'
     | '/produto/$slug'
   fileRoutesByTo: FileRoutesByTo
@@ -87,6 +97,7 @@ export interface FileRouteTypes {
     | '/catalogo'
     | '/contato'
     | '/favoritos'
+    | '/login'
     | '/servicos'
     | '/produto/$slug'
   id:
@@ -95,6 +106,7 @@ export interface FileRouteTypes {
     | '/catalogo'
     | '/contato'
     | '/favoritos'
+    | '/login'
     | '/servicos'
     | '/produto/$slug'
   fileRoutesById: FileRoutesById
@@ -104,6 +116,7 @@ export interface RootRouteChildren {
   CatalogoRoute: typeof CatalogoRoute
   ContatoRoute: typeof ContatoRoute
   FavoritosRoute: typeof FavoritosRoute
+  LoginRoute: typeof LoginRoute
   ServicosRoute: typeof ServicosRoute
   ProdutoSlugRoute: typeof ProdutoSlugRoute
 }
@@ -138,6 +151,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof FavoritosRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/servicos': {
       id: '/servicos'
       path: '/servicos'
@@ -160,6 +180,7 @@ const rootRouteChildren: RootRouteChildren = {
   CatalogoRoute: CatalogoRoute,
   ContatoRoute: ContatoRoute,
   FavoritosRoute: FavoritosRoute,
+  LoginRoute: LoginRoute,
   ServicosRoute: ServicosRoute,
   ProdutoSlugRoute: ProdutoSlugRoute,
 }
