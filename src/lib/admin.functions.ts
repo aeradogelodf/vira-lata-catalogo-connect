@@ -38,26 +38,27 @@ export const getAdminSummary = createServerFn({ method: "GET" })
       return { isAdmin: false, email, userId, lastSignInAt: null, counts: null };
     }
 
-    const count = async (
-      table: "products" | "categories" | "brands",
-      filter?: (q: ReturnType<typeof supabase.from>) => unknown,
-    ) => {
-      let query = supabase.from(table).select("id", { count: "exact", head: true });
-      if (filter) query = filter(query as never) as typeof query;
-      const { count: total, error } = await query;
-      if (error) throw new Error("Não foi possível carregar os indicadores.");
-      return total ?? 0;
-    };
-
+    const head = { count: "exact" as const, head: true };
     const [products, activeProducts, featuredProducts, onSaleProducts, categories, brands] =
       await Promise.all([
-        count("products"),
-        count("products", (q) => (q as never as { eq: Function }).eq("active", true)),
-        count("products", (q) => (q as never as { eq: Function }).eq("featured", true)),
-        count("products", (q) => (q as never as { eq: Function }).eq("on_sale", true)),
-        count("categories"),
-        count("brands"),
+        supabase.from("products").select("id", head),
+        supabase.from("products").select("id", head).eq("active", true),
+        supabase.from("products").select("id", head).eq("featured", true),
+        supabase.from("products").select("id", head).eq("on_sale", true),
+        supabase.from("categories").select("id", head),
+        supabase.from("brands").select("id", head),
       ]);
+
+    for (const result of [
+      products,
+      activeProducts,
+      featuredProducts,
+      onSaleProducts,
+      categories,
+      brands,
+    ]) {
+      if (result.error) throw new Error("Não foi possível carregar os indicadores.");
+    }
 
     const { data: userData } = await supabase.auth.getUser();
 
@@ -66,6 +67,13 @@ export const getAdminSummary = createServerFn({ method: "GET" })
       email,
       userId,
       lastSignInAt: userData?.user?.last_sign_in_at ?? null,
-      counts: { products, activeProducts, featuredProducts, onSaleProducts, categories, brands },
+      counts: {
+        products: products.count ?? 0,
+        activeProducts: activeProducts.count ?? 0,
+        featuredProducts: featuredProducts.count ?? 0,
+        onSaleProducts: onSaleProducts.count ?? 0,
+        categories: categories.count ?? 0,
+        brands: brands.count ?? 0,
+      },
     };
   });
