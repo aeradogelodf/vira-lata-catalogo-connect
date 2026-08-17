@@ -4,6 +4,7 @@ import {
   Link,
   createRootRouteWithContext,
   useRouter,
+  useRouterState,
   HeadContent,
   Scripts,
 } from "@tanstack/react-router";
@@ -127,17 +128,22 @@ function RootShell({ children }: { children: ReactNode }) {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+  const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const isBackoffice =
+    pathname.startsWith("/admin") ||
+    pathname.startsWith("/login") ||
+    pathname.startsWith("/redefinir-senha");
 
   return (
     <QueryClientProvider client={queryClient}>
-      <div className="flex min-h-screen flex-col pb-16 md:pb-0">
-        <SiteHeader />
+      <div className={`flex min-h-screen flex-col ${isBackoffice ? "" : "pb-16 md:pb-0"}`}>
+        {!isBackoffice && <SiteHeader />}
         <main className="flex-1">
           {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
           <Outlet />
         </main>
-        <SiteFooter />
-        <MobileTabBar />
+        {!isBackoffice && <SiteFooter />}
+        {!isBackoffice && <MobileTabBar />}
       </div>
       <Toaster />
     </QueryClientProvider>
