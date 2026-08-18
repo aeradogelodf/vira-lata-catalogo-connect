@@ -433,11 +433,11 @@ export function TaxonomyManager({ kind, labels }: { kind: TaxonomyKind; labels: 
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Cancelar</AlertDialogCancel>
-            {toDelete && toDelete.productCount > 0 && (
+            {toDelete && toDelete.productCount > 0 && toDelete.active && (
               <Button
                 variant="outline"
                 onClick={() => {
-                  toggleMutation.mutate({ ...toDelete, active: true });
+                  toggleMutation.mutate(toDelete);
                   setToDelete(null);
                 }}
               >

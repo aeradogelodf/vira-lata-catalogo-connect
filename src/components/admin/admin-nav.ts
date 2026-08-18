@@ -30,8 +30,8 @@ export type AdminNavItem = {
 export const ADMIN_NAV: AdminNavItem[] = [
   { slug: "", label: "Dashboard", icon: LayoutDashboard, group: "Visão geral", ready: true },
   { slug: "produtos", label: "Produtos", icon: Package, group: "Catálogo", ready: false },
-  { slug: "categorias", label: "Categorias", icon: Tags, group: "Catálogo", ready: false },
-  { slug: "marcas", label: "Marcas", icon: Boxes, group: "Catálogo", ready: false },
+  { slug: "categorias", label: "Categorias", icon: Tags, group: "Catálogo", ready: true },
+  { slug: "marcas", label: "Marcas", icon: Boxes, group: "Catálogo", ready: true },
   { slug: "estoque", label: "Estoque", icon: Warehouse, group: "Catálogo", ready: false },
   { slug: "promocoes", label: "Promoções", icon: BadgePercent, group: "Catálogo", ready: false },
   { slug: "cupons", label: "Cupons", icon: Ticket, group: "Catálogo", ready: false },
