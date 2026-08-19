@@ -90,6 +90,25 @@ function mapProduct(row: ProductRow): Product {
 }
 
 export async function fetchProducts(): Promise<Product[]> {
+  return fetchProductsInternal();
+}
+
+/** Resolve caminhos do Storage privado em URLs assinadas para exibição. */
+async function withSignedImages(products: Product[]): Promise<Product[]> {
+  const refs = products.flatMap((product) => product.images.map((image) => image.url));
+  if (refs.length === 0) return products;
+  const signed = await resolveImageUrls(refs);
+  if (signed.size === 0) return products;
+  return products.map((product) => ({
+    ...product,
+    images: product.images.map((image) => ({
+      ...image,
+      url: signed.get(image.url) ?? image.url,
+    })),
+  }));
+}
+
+async function fetchProductsInternal(): Promise<Product[]> {
   const { data, error } = await supabase
     .from("products")
     .select(PRODUCT_FIELDS)
