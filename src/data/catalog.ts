@@ -9,6 +9,7 @@
  * RLS no banco, não somente por estes filtros.
  */
 import { supabase } from "@/integrations/supabase/client";
+import { resolveImageUrls } from "@/lib/product-images";
 import type { Brand, Category, Product, ProductImage } from "@/types/catalog";
 
 /** Campos mínimos necessários ao catálogo público (nada administrativo). */
@@ -97,7 +98,8 @@ export async function fetchProducts(): Promise<Product[]> {
     .order("name", { ascending: true });
 
   if (error) throw error;
-  return (data as unknown as ProductRow[] | null)?.map(mapProduct) ?? [];
+  const products = (data as unknown as ProductRow[] | null)?.map(mapProduct) ?? [];
+  return withSignedImages(products);
 }
 
 export async function fetchCategories(): Promise<Category[]> {
@@ -146,5 +148,7 @@ export async function fetchProductBySlug(slug: string): Promise<Product | null> 
     .maybeSingle();
 
   if (error) throw error;
-  return data ? mapProduct(data as unknown as ProductRow) : null;
+  if (!data) return null;
+  const [product] = await withSignedImages([mapProduct(data as unknown as ProductRow)]);
+  return product ?? null;
 }
