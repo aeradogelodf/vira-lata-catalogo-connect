@@ -9,6 +9,7 @@
  * RLS no banco, não somente por estes filtros.
  */
 import { supabase } from "@/integrations/supabase/client";
+import { resolveImageUrls } from "@/lib/product-images";
 import type { Brand, Category, Product, ProductImage } from "@/types/catalog";
 
 /** Campos mínimos necessários ao catálogo público (nada administrativo). */
@@ -89,6 +90,25 @@ function mapProduct(row: ProductRow): Product {
 }
 
 export async function fetchProducts(): Promise<Product[]> {
+  return fetchProductsInternal();
+}
+
+/** Resolve caminhos do Storage privado em URLs assinadas para exibição. */
+async function withSignedImages(products: Product[]): Promise<Product[]> {
+  const refs = products.flatMap((product) => product.images.map((image) => image.url));
+  if (refs.length === 0) return products;
+  const signed = await resolveImageUrls(refs);
+  if (signed.size === 0) return products;
+  return products.map((product) => ({
+    ...product,
+    images: product.images.map((image) => ({
+      ...image,
+      url: signed.get(image.url) ?? image.url,
+    })),
+  }));
+}
+
+async function fetchProductsInternal(): Promise<Product[]> {
   const { data, error } = await supabase
     .from("products")
     .select(PRODUCT_FIELDS)
@@ -97,7 +117,8 @@ export async function fetchProducts(): Promise<Product[]> {
     .order("name", { ascending: true });
 
   if (error) throw error;
-  return (data as unknown as ProductRow[] | null)?.map(mapProduct) ?? [];
+  const products = (data as unknown as ProductRow[] | null)?.map(mapProduct) ?? [];
+  return withSignedImages(products);
 }
 
 export async function fetchCategories(): Promise<Category[]> {
@@ -146,5 +167,7 @@ export async function fetchProductBySlug(slug: string): Promise<Product | null> 
     .maybeSingle();
 
   if (error) throw error;
-  return data ? mapProduct(data as unknown as ProductRow) : null;
+  if (!data) return null;
+  const [product] = await withSignedImages([mapProduct(data as unknown as ProductRow)]);
+  return product ?? null;
 }
