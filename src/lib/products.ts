@@ -33,7 +33,7 @@ const intField = (label: string) =>
   z.coerce
     .number({ message: `Informe um número inteiro para ${label}.` })
     .int(`Informe um número inteiro para ${label}.`)
-    .min(0, `${label} не pode ser negativo.`.replace("не", "não"))
+    .min(0, `${label} não pode ser negativo.`)
     .max(1000000);
 
 export const productFormSchema = z
