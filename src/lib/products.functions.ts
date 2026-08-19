@@ -271,9 +271,10 @@ export const toggleProductFlag = createServerFn({ method: "POST" })
       }
     }
 
+    const patch: Record<string, boolean> = { [data.field]: data.value };
     let update = context.supabase
       .from("products")
-      .update({ [data.field]: data.value })
+      .update(patch as never)
       .eq("id", data.id);
     if (data.expectedUpdatedAt) update = update.eq("updated_at", data.expectedUpdatedAt);
     const { data: rows, error } = await update.select("id");
@@ -367,8 +368,9 @@ export const deleteProductImage = createServerFn({ method: "POST" })
         .eq("product_id", data.productId)
         .order("sort_order", { ascending: true })
         .limit(1);
-      if ((next ?? []).length > 0) {
-        await supabase.from("product_images").update({ is_primary: true }).eq("id", next![0].id);
+      const fallback = (next ?? [])[0];
+      if (fallback) {
+        await supabase.from("product_images").update({ is_primary: true }).eq("id", fallback.id);
       }
     }
     return { ok: true };
