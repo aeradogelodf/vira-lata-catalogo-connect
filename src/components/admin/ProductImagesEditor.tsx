@@ -63,20 +63,21 @@ export function ProductImagesEditor({
     onChanged();
   }
 
-  const mutate = <T,>(fn: (input: T) => Promise<unknown>) =>
-    useMutation({
-      mutationFn: fn,
-      onSuccess: refresh,
-      onError: (error) => toast.error(message(error)),
-    });
-
-  const removeMutation = mutate((imageId: string) =>
-    remove({ data: { productId, imageId } }),
-  );
-  const primaryMutation = mutate((imageId: string) =>
-    setPrimary({ data: { productId, imageId } }),
-  );
-  const reorderMutation = mutate((order: string[]) => reorder({ data: { productId, order } }));
+  const removeMutation = useMutation({
+    mutationFn: (imageId: string) => remove({ data: { productId, imageId } }),
+    onSuccess: refresh,
+    onError: (error) => toast.error(message(error)),
+  });
+  const primaryMutation = useMutation({
+    mutationFn: (imageId: string) => setPrimary({ data: { productId, imageId } }),
+    onSuccess: refresh,
+    onError: (error) => toast.error(message(error)),
+  });
+  const reorderMutation = useMutation({
+    mutationFn: (order: string[]) => reorder({ data: { productId, order } }),
+    onSuccess: refresh,
+    onError: (error) => toast.error(message(error)),
+  });
 
   async function handleFiles(files: FileList | null) {
     if (!files || files.length === 0) return;
