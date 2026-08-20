@@ -30,10 +30,7 @@ const toggleInput = idInput.extend({ active: z.boolean() });
 const FK = { categories: "category_id", brands: "brand_id" } as const;
 
 async function assertAdmin(context: { supabase: any; userId: string }) {
-  const { data, error } = await context.supabase.rpc("has_role", {
-    _user_id: context.userId,
-    _role: "admin",
-  });
+  const { data, error } = await context.supabase.rpc("is_admin");
   if (error) throw new Error("Não foi possível validar suas permissões.");
   if (!data) throw new Error("Acesso restrito a administradores.");
 }

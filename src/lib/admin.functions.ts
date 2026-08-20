@@ -19,17 +19,14 @@ export type AdminSummary = {
 
 /**
  * Verificação de papel feita no servidor, contra a tabela `user_roles`
- * (via função `has_role`). Nada é decidido no cliente.
+ * (via função `is_admin`). Nada é decidido no cliente.
  */
 export const getAdminSummary = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }): Promise<AdminSummary> => {
     const { supabase, userId, claims } = context;
 
-    const { data: isAdmin, error: roleError } = await supabase.rpc("has_role", {
-      _user_id: userId,
-      _role: "admin",
-    });
+    const { data: isAdmin, error: roleError } = await supabase.rpc("is_admin");
     if (roleError) throw new Error("Não foi possível verificar suas permissões.");
 
     const email = typeof claims["email"] === "string" ? (claims["email"] as string) : null;

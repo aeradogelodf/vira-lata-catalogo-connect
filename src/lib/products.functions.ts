@@ -50,15 +50,12 @@ const reorderInput = z.object({
 
 /**
  * Autorização SEMPRE no servidor: sessão válida (middleware) + papel admin
- * verificado pela função `has_role`. O RLS do banco continua sendo a última
+ * verificado pela função `is_admin`. O RLS do banco continua sendo a última
  * barreira. Todas as mutações passam por aqui, o que permite adicionar
  * auditoria futuramente em um único ponto.
  */
 async function assertAdmin(context: { supabase: any; userId: string }) {
-  const { data, error } = await context.supabase.rpc("has_role", {
-    _user_id: context.userId,
-    _role: "admin",
-  });
+  const { data, error } = await context.supabase.rpc("is_admin");
   if (error) throw new Error("Não foi possível validar suas permissões.");
   if (!data) throw new Error("Acesso restrito a administradores.");
 }
