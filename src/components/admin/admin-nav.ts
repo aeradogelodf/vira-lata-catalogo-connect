@@ -47,7 +47,7 @@ export const ADMIN_NAV: AdminNavItem[] = [
     ready: false,
   },
   { slug: "relatorios", label: "Relatórios", icon: ChartNoAxesColumn, group: "Operação", ready: false },
-  { slug: "configuracoes", label: "Configurações", icon: Settings, group: "Sistema", ready: false },
+  { slug: "configuracoes", label: "Configurações", icon: Settings, group: "Sistema", ready: true },
   { slug: "administradores", label: "Administradores", icon: UserCog, group: "Sistema", ready: false },
   { slug: "perfil", label: "Meu perfil", icon: CalendarDays, group: "Sistema", ready: true },
 ];

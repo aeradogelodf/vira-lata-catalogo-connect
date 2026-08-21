@@ -229,6 +229,99 @@ export type Database = {
           },
         ]
       }
+      store_settings: {
+        Row: {
+          city: string | null
+          complement: string | null
+          country: string
+          created_at: string
+          district: string | null
+          email: string | null
+          facebook_url: string | null
+          hide_out_of_stock: boolean
+          id: string
+          instagram_url: string | null
+          long_description: string | null
+          name: string
+          number: string | null
+          opening_hours: Json
+          other_social_url: string | null
+          phone: string | null
+          postal_code: string | null
+          segment: string | null
+          short_description: string | null
+          singleton: boolean
+          state: string | null
+          street: string | null
+          tiktok_url: string | null
+          trade_name: string | null
+          updated_at: string
+          website_url: string | null
+          whatsapp_display: string | null
+          whatsapp_e164: string
+        }
+        Insert: {
+          city?: string | null
+          complement?: string | null
+          country?: string
+          created_at?: string
+          district?: string | null
+          email?: string | null
+          facebook_url?: string | null
+          hide_out_of_stock?: boolean
+          id?: string
+          instagram_url?: string | null
+          long_description?: string | null
+          name: string
+          number?: string | null
+          opening_hours?: Json
+          other_social_url?: string | null
+          phone?: string | null
+          postal_code?: string | null
+          segment?: string | null
+          short_description?: string | null
+          singleton?: boolean
+          state?: string | null
+          street?: string | null
+          tiktok_url?: string | null
+          trade_name?: string | null
+          updated_at?: string
+          website_url?: string | null
+          whatsapp_display?: string | null
+          whatsapp_e164: string
+        }
+        Update: {
+          city?: string | null
+          complement?: string | null
+          country?: string
+          created_at?: string
+          district?: string | null
+          email?: string | null
+          facebook_url?: string | null
+          hide_out_of_stock?: boolean
+          id?: string
+          instagram_url?: string | null
+          long_description?: string | null
+          name?: string
+          number?: string | null
+          opening_hours?: Json
+          other_social_url?: string | null
+          phone?: string | null
+          postal_code?: string | null
+          segment?: string | null
+          short_description?: string | null
+          singleton?: boolean
+          state?: string | null
+          street?: string | null
+          tiktok_url?: string | null
+          trade_name?: string | null
+          updated_at?: string
+          website_url?: string | null
+          whatsapp_display?: string | null
+          whatsapp_e164?: string
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           created_at: string
