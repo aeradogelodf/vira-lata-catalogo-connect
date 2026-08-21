@@ -22,6 +22,7 @@ import { Route as ProdutoSlugRouteImport } from './routes/produto.$slug'
 import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authenticated/admin.index'
 import { Route as AuthenticatedAdminSplatRouteImport } from './routes/_authenticated/admin.$'
 import { Route as AuthenticatedAdminCategoriasRouteImport } from './routes/_authenticated/admin.categorias'
+import { Route as AuthenticatedAdminConfiguracoesRouteImport } from './routes/_authenticated/admin.configuracoes'
 import { Route as AuthenticatedAdminMarcasRouteImport } from './routes/_authenticated/admin.marcas'
 import { Route as AuthenticatedAdminPerfilRouteImport } from './routes/_authenticated/admin.perfil'
 import { Route as AuthenticatedAdminProdutosRouteImport } from './routes/_authenticated/admin.produtos'
@@ -91,6 +92,12 @@ const AuthenticatedAdminCategoriasRoute =
     path: '/categorias',
     getParentRoute: () => AuthenticatedAdminRoute,
   } as any)
+const AuthenticatedAdminConfiguracoesRoute =
+  AuthenticatedAdminConfiguracoesRouteImport.update({
+    id: '/configuracoes',
+    path: '/configuracoes',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
 const AuthenticatedAdminMarcasRoute =
   AuthenticatedAdminMarcasRouteImport.update({
     id: '/marcas',
@@ -122,6 +129,7 @@ export interface FileRoutesByFullPath {
   '/produto/$slug': typeof ProdutoSlugRoute
   '/admin/$': typeof AuthenticatedAdminSplatRoute
   '/admin/categorias': typeof AuthenticatedAdminCategoriasRoute
+  '/admin/configuracoes': typeof AuthenticatedAdminConfiguracoesRoute
   '/admin/marcas': typeof AuthenticatedAdminMarcasRoute
   '/admin/perfil': typeof AuthenticatedAdminPerfilRoute
   '/admin/produtos': typeof AuthenticatedAdminProdutosRoute
@@ -138,6 +146,7 @@ export interface FileRoutesByTo {
   '/produto/$slug': typeof ProdutoSlugRoute
   '/admin/$': typeof AuthenticatedAdminSplatRoute
   '/admin/categorias': typeof AuthenticatedAdminCategoriasRoute
+  '/admin/configuracoes': typeof AuthenticatedAdminConfiguracoesRoute
   '/admin/marcas': typeof AuthenticatedAdminMarcasRoute
   '/admin/perfil': typeof AuthenticatedAdminPerfilRoute
   '/admin/produtos': typeof AuthenticatedAdminProdutosRoute
@@ -157,6 +166,7 @@ export interface FileRoutesById {
   '/produto/$slug': typeof ProdutoSlugRoute
   '/_authenticated/admin/$': typeof AuthenticatedAdminSplatRoute
   '/_authenticated/admin/categorias': typeof AuthenticatedAdminCategoriasRoute
+  '/_authenticated/admin/configuracoes': typeof AuthenticatedAdminConfiguracoesRoute
   '/_authenticated/admin/marcas': typeof AuthenticatedAdminMarcasRoute
   '/_authenticated/admin/perfil': typeof AuthenticatedAdminPerfilRoute
   '/_authenticated/admin/produtos': typeof AuthenticatedAdminProdutosRoute
@@ -176,6 +186,7 @@ export interface FileRouteTypes {
     | '/produto/$slug'
     | '/admin/$'
     | '/admin/categorias'
+    | '/admin/configuracoes'
     | '/admin/marcas'
     | '/admin/perfil'
     | '/admin/produtos'
@@ -192,6 +203,7 @@ export interface FileRouteTypes {
     | '/produto/$slug'
     | '/admin/$'
     | '/admin/categorias'
+    | '/admin/configuracoes'
     | '/admin/marcas'
     | '/admin/perfil'
     | '/admin/produtos'
@@ -210,6 +222,7 @@ export interface FileRouteTypes {
     | '/produto/$slug'
     | '/_authenticated/admin/$'
     | '/_authenticated/admin/categorias'
+    | '/_authenticated/admin/configuracoes'
     | '/_authenticated/admin/marcas'
     | '/_authenticated/admin/perfil'
     | '/_authenticated/admin/produtos'
@@ -321,6 +334,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminCategoriasRouteImport
       parentRoute: typeof AuthenticatedAdminRoute
     }
+    '/_authenticated/admin/configuracoes': {
+      id: '/_authenticated/admin/configuracoes'
+      path: '/configuracoes'
+      fullPath: '/admin/configuracoes'
+      preLoaderRoute: typeof AuthenticatedAdminConfiguracoesRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
     '/_authenticated/admin/marcas': {
       id: '/_authenticated/admin/marcas'
       path: '/marcas'
@@ -348,6 +368,7 @@ declare module '@tanstack/react-router' {
 interface AuthenticatedAdminRouteChildren {
   AuthenticatedAdminSplatRoute: typeof AuthenticatedAdminSplatRoute
   AuthenticatedAdminCategoriasRoute: typeof AuthenticatedAdminCategoriasRoute
+  AuthenticatedAdminConfiguracoesRoute: typeof AuthenticatedAdminConfiguracoesRoute
   AuthenticatedAdminMarcasRoute: typeof AuthenticatedAdminMarcasRoute
   AuthenticatedAdminPerfilRoute: typeof AuthenticatedAdminPerfilRoute
   AuthenticatedAdminProdutosRoute: typeof AuthenticatedAdminProdutosRoute
@@ -357,6 +378,7 @@ interface AuthenticatedAdminRouteChildren {
 const AuthenticatedAdminRouteChildren: AuthenticatedAdminRouteChildren = {
   AuthenticatedAdminSplatRoute: AuthenticatedAdminSplatRoute,
   AuthenticatedAdminCategoriasRoute: AuthenticatedAdminCategoriasRoute,
+  AuthenticatedAdminConfiguracoesRoute: AuthenticatedAdminConfiguracoesRoute,
   AuthenticatedAdminMarcasRoute: AuthenticatedAdminMarcasRoute,
   AuthenticatedAdminPerfilRoute: AuthenticatedAdminPerfilRoute,
   AuthenticatedAdminProdutosRoute: AuthenticatedAdminProdutosRoute,

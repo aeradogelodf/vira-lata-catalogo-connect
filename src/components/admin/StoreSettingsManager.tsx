@@ -14,13 +14,14 @@ import { Switch } from "@/components/ui/switch";
 import { Skeleton } from "@/components/ui/skeleton";
 import { storeQueries } from "@/lib/store-queries";
 import {
+  FALLBACK_STORE,
   storeSettingsSchema,
   toFormValues,
   type StoreSettingsParsed,
 } from "@/lib/store-settings";
 import { saveStoreSettings } from "@/lib/store.functions";
 
-type Form = UseFormReturn<StoreSettingsParsed>;
+type Form = UseFormReturn<StoreSettingsParsed, unknown, StoreSettingsParsed>;
 
 function Field({
   form,
@@ -89,9 +90,9 @@ export function StoreSettingsManager() {
   const { data: store, isLoading } = useQuery(storeQueries.settings());
   const save = useServerFn(saveStoreSettings);
 
-  const form = useForm<StoreSettingsParsed>({
+  const form = useForm<StoreSettingsParsed, unknown, StoreSettingsParsed>({
     resolver: zodResolver(storeSettingsSchema) as never,
-    defaultValues: store ? toFormValues(store) : undefined,
+    defaultValues: toFormValues(store ?? FALLBACK_STORE),
   });
 
   const hours = useFieldArray({ control: form.control, name: "openingHours" });
