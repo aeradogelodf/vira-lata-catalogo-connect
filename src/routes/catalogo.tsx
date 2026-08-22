@@ -85,7 +85,15 @@ const sortLabels: Record<SortOption, string> = {
 
 function CatalogoPage() {
   const store = useStore();
-  const { data: products } = useSuspenseQuery(catalogQueries.products());
+  const { data: allProducts } = useSuspenseQuery(catalogQueries.products());
+  // Comportamento configurável em /admin/configuracoes.
+  const products = useMemo(
+    () =>
+      store.catalog.hideOutOfStock
+        ? allProducts.filter((product) => product.isAvailable)
+        : allProducts,
+    [allProducts, store.catalog.hideOutOfStock],
+  );
   const { data: categories } = useSuspenseQuery(catalogQueries.categories());
   const { data: brands } = useSuspenseQuery(catalogQueries.brands());
 
