@@ -111,6 +111,7 @@ function ProductNotFound() {
 
 function ProductPage() {
   const { product } = Route.useLoaderData();
+  const store = useStore();
   const { data: products } = useSuspenseQuery(catalogQueries.products());
   const { data: categories } = useSuspenseQuery(catalogQueries.categories());
   const { data: brands } = useSuspenseQuery(catalogQueries.brands());
