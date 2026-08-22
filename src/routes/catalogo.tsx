@@ -84,6 +84,7 @@ const sortLabels: Record<SortOption, string> = {
 };
 
 function CatalogoPage() {
+  const store = useStore();
   const { data: products } = useSuspenseQuery(catalogQueries.products());
   const { data: categories } = useSuspenseQuery(catalogQueries.categories());
   const { data: brands } = useSuspenseQuery(catalogQueries.brands());
@@ -126,7 +127,7 @@ function CatalogoPage() {
   return (
     <div className="container-page py-8 sm:py-10">
       <header>
-        <h1 className="text-2xl sm:text-3xl">Catálogo {STORE.name}</h1>
+        <h1 className="text-2xl sm:text-3xl">Catálogo {store.name}</h1>
         <p className="mt-2 max-w-2xl text-muted-foreground">
           Encontre produtos para cuidar melhor do seu pet e fale com a loja pelo WhatsApp.
         </p>

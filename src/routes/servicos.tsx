@@ -26,6 +26,7 @@ export const Route = createFileRoute("/servicos")({
 });
 
 function ServicosPage() {
+  const store = useStore();
   return (
     <div className="container-page py-10">
       <h1 className="text-2xl sm:text-3xl">Serviços</h1>
@@ -38,7 +39,7 @@ function ServicosPage() {
         <Scissors className="size-8 text-info" aria-hidden />
         <p className="font-display text-lg">Banho e tosa</p>
         <p className="max-w-md text-sm text-muted-foreground">
-          Detalhes e valores ainda não informados. Fale com a {STORE.name} para consultar.
+          Detalhes e valores ainda não informados. Fale com a {store.name} para consultar.
         </p>
         <Button asChild variant="whatsapp" className="mt-2">
           <a
