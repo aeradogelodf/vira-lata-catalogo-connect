@@ -2,7 +2,7 @@ import { Link } from "@tanstack/react-router";
 import { Heart, Menu, Search } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
-import { STORE } from "@/config/store";
+import { useStore } from "@/hooks/use-store";
 import { useFavorites } from "@/hooks/use-favorites";
 import { whatsappMessages, whatsappUrl } from "@/lib/whatsapp";
 
@@ -15,11 +15,12 @@ const navItems = [
 
 export function SiteHeader() {
   const { count } = useFavorites();
+  const store = useStore();
 
   return (
     <header className="sticky top-0 z-40 border-b border-border bg-background/95 backdrop-blur">
       <div className="container-page flex h-16 items-center gap-3">
-        <Link to="/" className="flex items-center gap-2" aria-label={`${STORE.name} — início`}>
+        <Link to="/" className="flex items-center gap-2" aria-label={`${store.name} — início`}>
           <span className="grid size-9 place-items-center rounded-xl bg-primary text-primary-foreground font-display text-lg font-bold">
             V
           </span>
@@ -59,7 +60,7 @@ export function SiteHeader() {
             </Link>
           </Button>
           <Button asChild variant="whatsapp" size="sm" className="hidden sm:inline-flex">
-            <a href={whatsappUrl(whatsappMessages.general())} target="_blank" rel="noopener noreferrer">
+            <a href={whatsappUrl(whatsappMessages.general(store), store)} target="_blank" rel="noopener noreferrer">
               WhatsApp
             </a>
           </Button>

@@ -17,7 +17,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
-import { STORE } from "@/config/store";
+import { useStore } from "@/hooks/use-store";
 import { catalogQueries } from "@/lib/catalog-queries";
 import {
   applyCatalog,

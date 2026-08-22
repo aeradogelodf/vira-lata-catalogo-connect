@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { Scissors } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
-import { STORE } from "@/config/store";
+import { useStore } from "@/hooks/use-store";
 import { whatsappMessages, whatsappUrl } from "@/lib/whatsapp";
 
 export const Route = createFileRoute("/servicos")({
