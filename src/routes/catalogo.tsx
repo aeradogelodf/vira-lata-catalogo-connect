@@ -17,7 +17,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
-import { STORE } from "@/config/store";
+import { useStore } from "@/hooks/use-store";
 import { catalogQueries } from "@/lib/catalog-queries";
 import {
   applyCatalog,
@@ -84,7 +84,16 @@ const sortLabels: Record<SortOption, string> = {
 };
 
 function CatalogoPage() {
-  const { data: products } = useSuspenseQuery(catalogQueries.products());
+  const store = useStore();
+  const { data: allProducts } = useSuspenseQuery(catalogQueries.products());
+  // Comportamento configurável em /admin/configuracoes.
+  const products = useMemo(
+    () =>
+      store.catalog.hideOutOfStock
+        ? allProducts.filter((product) => product.isAvailable)
+        : allProducts,
+    [allProducts, store.catalog.hideOutOfStock],
+  );
   const { data: categories } = useSuspenseQuery(catalogQueries.categories());
   const { data: brands } = useSuspenseQuery(catalogQueries.brands());
 
@@ -126,7 +135,7 @@ function CatalogoPage() {
   return (
     <div className="container-page py-8 sm:py-10">
       <header>
-        <h1 className="text-2xl sm:text-3xl">Catálogo {STORE.name}</h1>
+        <h1 className="text-2xl sm:text-3xl">Catálogo {store.name}</h1>
         <p className="mt-2 max-w-2xl text-muted-foreground">
           Encontre produtos para cuidar melhor do seu pet e fale com a loja pelo WhatsApp.
         </p>

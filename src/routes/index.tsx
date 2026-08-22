@@ -2,49 +2,51 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { Clock, Heart, MapPin, MessageCircle, Scissors, Tag } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
-import { STORE, fullAddress } from "@/config/store";
+import { useStore } from "@/hooks/use-store";
+import { storeQueries } from "@/lib/store-queries";
+import { formatAddress, type StoreInfo } from "@/lib/store-settings";
+import { localBusinessJsonLd, organizationJsonLd } from "@/lib/store-seo";
 import { whatsappMessages, whatsappUrl } from "@/lib/whatsapp";
 
 export const Route = createFileRoute("/")({
-  head: () => ({
-    meta: [
-      { title: "Agropet Vira Lata — Catálogo digital em Ceilândia Sul, DF" },
-      {
-        name: "description",
-        content:
-          "Catálogo digital da Agropet Vira Lata: produtos e serviços para pets em Ceilândia Sul, Brasília — DF. Atendimento pelo WhatsApp (61) 3399-7123.",
-      },
-      { property: "og:title", content: "Agropet Vira Lata — Catálogo digital" },
-      {
-        property: "og:description",
-        content: "Produtos e serviços para o seu animal, com atendimento direto pelo WhatsApp.",
-      },
-      { property: "og:type", content: "website" },
-      { property: "og:url", content: "/" },
-      { name: "twitter:card", content: "summary_large_image" },
-    ],
-    links: [{ rel: "canonical", href: "/" }],
-    scripts: [
-      {
-        type: "application/ld+json",
-        children: JSON.stringify({
-          "@context": "https://schema.org",
-          "@type": "LocalBusiness",
-          name: STORE.name,
-          description: STORE.shortDescription,
-          telephone: `+${STORE.whatsapp.e164}`,
-          address: {
-            "@type": "PostalAddress",
-            streetAddress: STORE.address.street,
-            addressLocality: `${STORE.address.district}, ${STORE.address.city}`,
-            addressRegion: STORE.address.state,
-            postalCode: STORE.address.postalCode,
-            addressCountry: STORE.address.country,
-          },
-        }),
-      },
-    ],
-  }),
+  loader: ({ context }) => context.queryClient.ensureQueryData(storeQueries.settings()),
+  head: ({ loaderData }) => {
+    const store = loaderData as StoreInfo | undefined;
+    const name = store?.name ?? "Agropet Vira Lata";
+    const city = [store?.address.district, store?.address.city, store?.address.state]
+      .filter(Boolean)
+      .join(", ");
+    const title = `${name} — Catálogo digital${city ? ` em ${city}` : ""}`.slice(0, 59);
+    const description = (
+      store?.shortDescription ??
+      "Catálogo digital com produtos e serviços para o seu animal, com atendimento pelo WhatsApp."
+    ).slice(0, 158);
+
+    return {
+      meta: [
+        { title },
+        { name: "description", content: description },
+        { property: "og:title", content: `${name} — Catálogo digital` },
+        { property: "og:description", content: description },
+        { property: "og:type", content: "website" },
+        { property: "og:url", content: "/" },
+        { name: "twitter:card", content: "summary_large_image" },
+      ],
+      links: [{ rel: "canonical", href: "/" }],
+      scripts: store
+        ? [
+            {
+              type: "application/ld+json",
+              children: JSON.stringify(localBusinessJsonLd(store)),
+            },
+            {
+              type: "application/ld+json",
+              children: JSON.stringify(organizationJsonLd(store)),
+            },
+          ]
+        : [],
+    };
+  },
   component: Index,
 });
 
@@ -76,6 +78,8 @@ const pillars = [
 ];
 
 function Index() {
+  const store = useStore();
+  const address = formatAddress(store);
   return (
     <>
       <section className="bg-gradient-to-b from-secondary/60 to-background">
@@ -86,7 +90,7 @@ function Index() {
             </span>
             <h1 className="mt-4 text-3xl leading-tight sm:text-4xl lg:text-5xl">
               Tudo para o seu animal na{" "}
-              <span className="text-primary">Agropet Vira Lata</span>
+              <span className="text-primary">{store.name}</span>
             </h1>
             <p className="mt-4 max-w-xl text-muted-foreground">
               Veja os produtos, salve seus favoritos e fale com a loja pelo WhatsApp. Simples,
@@ -98,7 +102,7 @@ function Index() {
               </Button>
               <Button asChild variant="whatsapp" size="xl">
                 <a
-                  href={whatsappUrl(whatsappMessages.general())}
+                  href={whatsappUrl(whatsappMessages.general(store), store)}
                   target="_blank"
                   rel="noopener noreferrer"
                 >
@@ -107,7 +111,7 @@ function Index() {
               </Button>
             </div>
             <p className="mt-4 text-sm text-muted-foreground">
-              WhatsApp {STORE.whatsapp.display}
+              WhatsApp {store.whatsapp.display ?? store.whatsapp.e164}
             </p>
           </div>
 
@@ -115,15 +119,15 @@ function Index() {
             <h2 className="text-lg">Informações da loja</h2>
             <p className="mt-3 flex gap-2 text-sm text-muted-foreground">
               <MapPin className="mt-0.5 size-4 shrink-0 text-primary" aria-hidden />
-              {fullAddress}
+              {address}
             </p>
             <div className="mt-4 flex gap-2 text-sm text-muted-foreground">
               <Clock className="mt-0.5 size-4 shrink-0 text-info" aria-hidden />
               <ul className="w-full space-y-1">
-                {STORE.openingHours.map((h) => (
+                {store.openingHours.map((h) => (
                   <li key={h.day} className="flex justify-between gap-4">
                     <span>{h.label}</span>
-                    <span>{h.opensAt ? `${h.opensAt} às ${h.closesAt}` : "Fechado"}</span>
+                    <span>{h.opensAt && h.closesAt ? `${h.opensAt} às ${h.closesAt}` : "Fechado"}</span>
                   </li>
                 ))}
               </ul>
