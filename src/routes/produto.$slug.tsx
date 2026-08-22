@@ -9,7 +9,9 @@ import { ProductGallery } from "@/components/catalog/ProductGallery";
 import { ShareButton } from "@/components/catalog/ShareButton";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { STORE } from "@/config/store";
+import { useStore } from "@/hooks/use-store";
+import { storeQueries } from "@/lib/store-queries";
+import { FALLBACK_STORE } from "@/lib/store-settings";
 import { catalogQueries } from "@/lib/catalog-queries";
 import { formatPrice, isPromotion, relatedProducts } from "@/lib/catalog";
 import { whatsappMessages, whatsappUrl } from "@/lib/whatsapp";
@@ -27,24 +29,25 @@ export const Route = createFileRoute("/produto/$slug")({
       context.queryClient.ensureQueryData(catalogQueries.categories()),
       context.queryClient.ensureQueryData(catalogQueries.brands()),
     ]);
-    return { product };
+    const store = await context.queryClient.ensureQueryData(storeQueries.settings());
+    return { product, store };
   },
   head: ({ params, loaderData }) => {
     const url = `${SITE}/produto/${params.slug}`;
     if (!loaderData) {
       return {
         meta: [
-          { title: `Produto indisponível — ${STORE.name}` },
+          { title: `Produto indisponível — ${FALLBACK_STORE.name}` },
           { name: "robots", content: "noindex" },
         ],
       };
     }
-    const { product } = loaderData;
+    const { product, store } = loaderData;
     const description =
       product.seoDescription ??
       product.description ??
-      `${product.name} no catálogo da ${STORE.name}. Peça informações pelo WhatsApp.`;
-    const title = product.seoTitle ?? `${product.name} — ${STORE.name}`;
+      `${product.name} no catálogo da ${store.name}. Peça informações pelo WhatsApp.`;
+    const title = product.seoTitle ?? `${product.name} — ${store.name}`;
 
     return {
       meta: [
@@ -173,7 +176,7 @@ function ProductPage() {
           <div className="mt-6 flex flex-wrap gap-2">
             <Button asChild variant="whatsapp" size="lg" className="flex-1 sm:flex-none">
               <a
-                href={whatsappUrl(whatsappMessages.product(product.name))}
+                href={whatsappUrl(whatsappMessages.product(product.name, store), store)}
                 target="_blank"
                 rel="noopener noreferrer"
               >
@@ -186,7 +189,7 @@ function ProductPage() {
           </div>
 
           <p className="mt-4 text-xs text-muted-foreground">
-            O catálogo não finaliza vendas: a compra é concluída no atendimento da {STORE.name}.
+            O catálogo não finaliza vendas: a compra é concluída no atendimento da {store.name}.
           </p>
         </div>
       </div>
