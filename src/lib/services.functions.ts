@@ -122,7 +122,9 @@ export const toggleServiceFlag = createServerFn({ method: "POST" })
     await assertAdmin(context);
     const { error } = await context.supabase
       .from("services")
-      .update({ [data.field]: data.value })
+      .update(
+        data.field === "active" ? { active: data.value } : { featured: data.value },
+      )
       .eq("id", data.id);
     if (error) throw new Error("Não foi possível atualizar o serviço.");
     return { ok: true };
