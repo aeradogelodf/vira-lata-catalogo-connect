@@ -434,15 +434,12 @@ function ServiceFormDialog({
               id="service-name"
               {...form.register("name", {
                 onChange: (event) => {
-                  if (!service && !form.getValues("slug")) return;
-                  if (!service) form.setValue("slug", slugify(event.target.value));
+                  // Ao criar, o slug acompanha o nome até o admin editá-lo manualmente.
+                  if (!service && !slugTouched) {
+                    form.setValue("slug", slugify(event.target.value), { shouldValidate: true });
+                  }
                 },
               })}
-              onBlur={(event) => {
-                if (!form.getValues("slug")) {
-                  form.setValue("slug", slugify(event.target.value));
-                }
-              }}
             />
             {form.formState.errors.name && (
               <p className="text-sm text-destructive">{form.formState.errors.name.message}</p>
@@ -451,9 +448,20 @@ function ServiceFormDialog({
 
           <div className="space-y-2">
             <Label htmlFor="service-slug">Slug</Label>
-            <Input id="service-slug" {...form.register("slug")} />
+            <Input
+              id="service-slug"
+              value={form.watch("slug")}
+              onChange={(event) => {
+                setSlugTouched(true);
+                form.setValue("slug", event.target.value, { shouldValidate: true });
+              }}
+              onBlur={(event) =>
+                form.setValue("slug", slugify(event.target.value), { shouldValidate: true })
+              }
+            />
             {form.formState.errors.slug && (
               <p className="text-sm text-destructive">{form.formState.errors.slug.message}</p>
+
             )}
           </div>
 
