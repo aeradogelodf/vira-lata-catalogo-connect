@@ -341,6 +341,7 @@ function ServiceFormDialog({
   const save = useServerFn(saveService);
   const [uploading, setUploading] = useState(false);
   const [preview, setPreview] = useState<string | null>(null);
+  const [slugTouched, setSlugTouched] = useState(Boolean(service));
 
   const form = useForm<ServiceFormValues>({
     resolver: zodResolver(serviceFormSchema) as never,
