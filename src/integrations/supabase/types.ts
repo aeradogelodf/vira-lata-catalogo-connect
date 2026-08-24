@@ -14,6 +14,51 @@ export type Database = {
   }
   public: {
     Tables: {
+      banners: {
+        Row: {
+          active: boolean
+          alt_text: string | null
+          created_at: string
+          cta_label: string | null
+          id: string
+          image_url: string | null
+          link_type: Database["public"]["Enums"]["banner_link_type"]
+          link_value: string | null
+          sort_order: number
+          subtitle: string | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          active?: boolean
+          alt_text?: string | null
+          created_at?: string
+          cta_label?: string | null
+          id?: string
+          image_url?: string | null
+          link_type?: Database["public"]["Enums"]["banner_link_type"]
+          link_value?: string | null
+          sort_order?: number
+          subtitle?: string | null
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          active?: boolean
+          alt_text?: string | null
+          created_at?: string
+          cta_label?: string | null
+          id?: string
+          image_url?: string | null
+          link_type?: Database["public"]["Enums"]["banner_link_type"]
+          link_value?: string | null
+          sort_order?: number
+          subtitle?: string | null
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       brands: {
         Row: {
           active: boolean
@@ -404,6 +449,13 @@ export type Database = {
     }
     Enums: {
       app_role: "admin" | "moderator" | "user"
+      banner_link_type:
+        | "none"
+        | "catalog"
+        | "product"
+        | "service"
+        | "whatsapp"
+        | "external"
       product_unit: "kg" | "unidade" | "saco"
     }
     CompositeTypes: {
@@ -533,6 +585,14 @@ export const Constants = {
   public: {
     Enums: {
       app_role: ["admin", "moderator", "user"],
+      banner_link_type: [
+        "none",
+        "catalog",
+        "product",
+        "service",
+        "whatsapp",
+        "external",
+      ],
       product_unit: ["kg", "unidade", "saco"],
     },
   },
