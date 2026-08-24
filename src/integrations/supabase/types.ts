@@ -390,7 +390,90 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      store_settings_public: {
+        Row: {
+          city: string | null
+          complement: string | null
+          country: string | null
+          district: string | null
+          email: string | null
+          facebook_url: string | null
+          hide_out_of_stock: boolean | null
+          instagram_url: string | null
+          long_description: string | null
+          name: string | null
+          number: string | null
+          opening_hours: Json | null
+          other_social_url: string | null
+          phone: string | null
+          postal_code: string | null
+          segment: string | null
+          short_description: string | null
+          state: string | null
+          street: string | null
+          tiktok_url: string | null
+          trade_name: string | null
+          updated_at: string | null
+          website_url: string | null
+          whatsapp_display: string | null
+          whatsapp_e164: string | null
+        }
+        Insert: {
+          city?: string | null
+          complement?: string | null
+          country?: string | null
+          district?: string | null
+          email?: string | null
+          facebook_url?: string | null
+          hide_out_of_stock?: boolean | null
+          instagram_url?: string | null
+          long_description?: string | null
+          name?: string | null
+          number?: string | null
+          opening_hours?: Json | null
+          other_social_url?: string | null
+          phone?: string | null
+          postal_code?: string | null
+          segment?: string | null
+          short_description?: string | null
+          state?: string | null
+          street?: string | null
+          tiktok_url?: string | null
+          trade_name?: string | null
+          updated_at?: string | null
+          website_url?: string | null
+          whatsapp_display?: string | null
+          whatsapp_e164?: string | null
+        }
+        Update: {
+          city?: string | null
+          complement?: string | null
+          country?: string | null
+          district?: string | null
+          email?: string | null
+          facebook_url?: string | null
+          hide_out_of_stock?: boolean | null
+          instagram_url?: string | null
+          long_description?: string | null
+          name?: string | null
+          number?: string | null
+          opening_hours?: Json | null
+          other_social_url?: string | null
+          phone?: string | null
+          postal_code?: string | null
+          segment?: string | null
+          short_description?: string | null
+          state?: string | null
+          street?: string | null
+          tiktok_url?: string | null
+          trade_name?: string | null
+          updated_at?: string | null
+          website_url?: string | null
+          whatsapp_display?: string | null
+          whatsapp_e164?: string | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
       has_role: {
