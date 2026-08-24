@@ -6,6 +6,7 @@ import {
   Image,
   LayoutDashboard,
   Package,
+  Scissors,
   ScissorsLineDashed,
   Settings,
   ShoppingBag,
@@ -38,7 +39,7 @@ export const ADMIN_NAV: AdminNavItem[] = [
   { slug: "banners", label: "Banners", icon: Image, group: "Catálogo", ready: false },
   { slug: "pedidos", label: "Pedidos", icon: ShoppingBag, group: "Operação", ready: false },
   { slug: "clientes", label: "Clientes", icon: Users, group: "Operação", ready: false },
-  { slug: "servicos", label: "Serviços", icon: Settings, group: "Operação", ready: false },
+  { slug: "servicos", label: "Serviços", icon: Scissors, group: "Operação", ready: true },
   {
     slug: "banho-tosa",
     label: "Banho e tosa",
