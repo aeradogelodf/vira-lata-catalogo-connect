@@ -36,7 +36,7 @@ export const ADMIN_NAV: AdminNavItem[] = [
   { slug: "estoque", label: "Estoque", icon: Warehouse, group: "Catálogo", ready: false },
   { slug: "promocoes", label: "Promoções", icon: BadgePercent, group: "Catálogo", ready: false },
   { slug: "cupons", label: "Cupons", icon: Ticket, group: "Catálogo", ready: false },
-  { slug: "banners", label: "Banners", icon: Image, group: "Catálogo", ready: false },
+  { slug: "banners", label: "Banners", icon: Image, group: "Catálogo", ready: true },
   { slug: "pedidos", label: "Pedidos", icon: ShoppingBag, group: "Operação", ready: false },
   { slug: "clientes", label: "Clientes", icon: Users, group: "Operação", ready: false },
   { slug: "servicos", label: "Serviços", icon: Scissors, group: "Operação", ready: true },

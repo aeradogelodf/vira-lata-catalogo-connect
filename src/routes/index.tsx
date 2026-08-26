@@ -1,15 +1,40 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { Clock, Heart, MapPin, MessageCircle, Scissors, Tag } from "lucide-react";
+import { useSuspenseQuery } from "@tanstack/react-query";
+import {
+  ArrowRight,
+  BadgePercent,
+  Clock,
+  Heart,
+  MapPin,
+  MessageCircle,
+  Package,
+  Scissors,
+  Tag,
+} from "lucide-react";
 
+import { ProductCard } from "@/components/catalog/ProductCard";
+import { BannerCarousel } from "@/components/home/BannerCarousel";
 import { Button } from "@/components/ui/button";
 import { useStore } from "@/hooks/use-store";
+import { bannerQueries } from "@/lib/banners-queries";
+import { buildIndexes, isPromotion } from "@/lib/catalog";
+import { catalogQueries } from "@/lib/catalog-queries";
+import { serviceQueries } from "@/lib/services-queries";
 import { storeQueries } from "@/lib/store-queries";
 import { formatAddress, type StoreInfo } from "@/lib/store-settings";
 import { localBusinessJsonLd, organizationJsonLd } from "@/lib/store-seo";
 import { whatsappMessages, whatsappUrl } from "@/lib/whatsapp";
 
 export const Route = createFileRoute("/")({
-  loader: ({ context }) => context.queryClient.ensureQueryData(storeQueries.settings()),
+  loader: async ({ context }) => {
+    await Promise.all([
+      context.queryClient.ensureQueryData(storeQueries.settings()),
+      context.queryClient.ensureQueryData(bannerQueries.public()),
+      context.queryClient.ensureQueryData(catalogQueries.categories()),
+      context.queryClient.ensureQueryData(catalogQueries.products()),
+      context.queryClient.ensureQueryData(serviceQueries.public()),
+    ]);
+  },
   head: ({ loaderData }) => {
     const store = loaderData as StoreInfo | undefined;
     const name = store?.name ?? "Agropet Vira Lata";
@@ -54,7 +79,7 @@ const pillars = [
   {
     icon: Tag,
     title: "Catálogo organizado",
-    text: "Categorias, marcas, busca e filtros — chegando na Etapa 03.",
+    text: "Categorias, marcas, busca e filtros para encontrar rápido.",
     tone: "text-primary",
   },
   {
@@ -80,8 +105,21 @@ const pillars = [
 function Index() {
   const store = useStore();
   const address = formatAddress(store);
+
+  const { data: banners } = useSuspenseQuery(bannerQueries.public());
+  const { data: categories } = useSuspenseQuery(catalogQueries.categories());
+  const { data: products } = useSuspenseQuery(catalogQueries.products());
+  const { data: services } = useSuspenseQuery(serviceQueries.public());
+
+  const indexes = buildIndexes(categories, []);
+  const featured = products.filter((product) => product.isFeatured).slice(0, 8);
+  const promotions = products.filter(isPromotion).slice(0, 8);
+  const featuredServices = services.filter((service) => service.featured).slice(0, 3);
+  const visibleCategories = categories.slice(0, 6);
+
   return (
     <>
+      {/* 1. Hero institucional */}
       <section className="bg-gradient-to-b from-secondary/60 to-background">
         <div className="container-page grid gap-8 py-12 sm:py-16 lg:grid-cols-2 lg:items-center">
           <div>
@@ -136,7 +174,208 @@ function Index() {
         </div>
       </section>
 
-      <section className="container-page py-12">
+      {/* 2. Banners de campanha (admin /admin/banners) */}
+      <BannerCarousel banners={banners} store={store} />
+
+      {/* 3. Categorias */}
+      {visibleCategories.length > 0 && (
+        <section className="container-page py-10">
+          <div className="flex items-end justify-between gap-4">
+            <h2 className="text-2xl">Navegue por categoria</h2>
+            <Link
+              to="/catalogo"
+              className="inline-flex items-center gap-1 text-sm font-semibold text-primary hover:underline"
+            >
+              Ver catálogo <ArrowRight className="size-4" aria-hidden />
+            </Link>
+          </div>
+          <ul className="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
+            {visibleCategories.map((category) => (
+              <li key={category.id}>
+                <Link
+                  to="/catalogo"
+                  className="surface-card flex h-full flex-col items-center gap-2 p-4 text-center transition-shadow hover:shadow-md focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
+                >
+                  <Package className="size-6 text-primary" aria-hidden />
+                  <span className="text-sm font-semibold">{category.name}</span>
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
+
+      {/* 4. Produtos em destaque */}
+      {featured.length > 0 && (
+        <section className="container-page py-10">
+          <div className="flex items-end justify-between gap-4">
+            <div>
+              <h2 className="text-2xl">Destaques da loja</h2>
+              <p className="mt-1 text-sm text-muted-foreground">
+                Seleção feita pela {store.name}.
+              </p>
+            </div>
+            <Link
+              to="/catalogo"
+              className="inline-flex items-center gap-1 text-sm font-semibold text-primary hover:underline"
+            >
+              Ver tudo <ArrowRight className="size-4" aria-hidden />
+            </Link>
+          </div>
+          <ul className="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
+            {featured.map((product) => (
+              <li key={product.id}>
+                <ProductCard
+                  product={product}
+                  category={
+                    product.categoryId
+                      ? indexes.categoriesById.get(product.categoryId)
+                      : undefined
+                  }
+                />
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
+
+      {/* 5. Promoções */}
+      {promotions.length > 0 && (
+        <section className="container-page py-10">
+          <div className="flex items-end justify-between gap-4">
+            <div>
+              <h2 className="text-2xl">
+                <BadgePercent className="mr-2 inline size-6 text-warning" aria-hidden />
+                Promoções
+              </h2>
+              <p className="mt-1 text-sm text-muted-foreground">
+                Ofertas ativas — aproveite pelo WhatsApp.
+              </p>
+            </div>
+            <Link
+              to="/catalogo"
+              className="inline-flex items-center gap-1 text-sm font-semibold text-primary hover:underline"
+            >
+              Ver ofertas <ArrowRight className="size-4" aria-hidden />
+            </Link>
+          </div>
+          <ul className="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
+            {promotions.map((product) => (
+              <li key={product.id}>
+                <ProductCard
+                  product={product}
+                  category={
+                    product.categoryId
+                      ? indexes.categoriesById.get(product.categoryId)
+                      : undefined
+                  }
+                />
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
+
+      {/* 6. Serviços em destaque */}
+      {featuredServices.length > 0 && (
+        <section className="container-page py-10">
+          <div className="flex items-end justify-between gap-4">
+            <h2 className="text-2xl">Serviços em destaque</h2>
+            <Link
+              to="/servicos"
+              className="inline-flex items-center gap-1 text-sm font-semibold text-primary hover:underline"
+            >
+              Ver serviços <ArrowRight className="size-4" aria-hidden />
+            </Link>
+          </div>
+          <ul className="mt-5 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {featuredServices.map((service) => (
+              <li key={service.id} className="surface-card flex flex-col overflow-hidden">
+                {service.imageUrl ? (
+                  <img
+                    src={service.imageUrl}
+                    alt={`Serviço ${service.name} na ${store.name}`}
+                    className="aspect-[4/3] w-full object-cover"
+                    loading="lazy"
+                  />
+                ) : (
+                  <div
+                    className="grid aspect-[4/3] w-full place-items-center bg-secondary"
+                    aria-hidden
+                  >
+                    <Scissors className="size-8 text-muted-foreground" />
+                  </div>
+                )}
+                <div className="flex flex-1 flex-col p-4">
+                  <h3 className="font-display text-base font-bold">{service.name}</h3>
+                  {service.description && (
+                    <p className="mt-1 line-clamp-2 text-sm text-muted-foreground">
+                      {service.description}
+                    </p>
+                  )}
+                  <Button asChild variant="whatsapp" size="sm" className="mt-3 w-full">
+                    <a
+                      href={whatsappUrl(whatsappMessages.service(service.name, store), store)}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      aria-label={`Falar no WhatsApp sobre o serviço ${service.name}`}
+                    >
+                      Agendar no WhatsApp
+                    </a>
+                  </Button>
+                </div>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
+
+      {/* 7. CTAs inteligentes */}
+      <section className="container-page py-10">
+        <div className="grid gap-4 sm:grid-cols-3">
+          <article className="surface-card flex flex-col p-6">
+            <MessageCircle className="size-7 text-success" aria-hidden />
+            <h2 className="mt-3 text-lg">Peça pelo WhatsApp</h2>
+            <p className="mt-1 flex-1 text-sm text-muted-foreground">
+              Montou a lista? Envie direto para a loja e receba atendimento humano.
+            </p>
+            <Button asChild variant="whatsapp" className="mt-4">
+              <a
+                href={whatsappUrl(whatsappMessages.general(store), store)}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Chamar no WhatsApp
+              </a>
+            </Button>
+          </article>
+
+          <article className="surface-card flex flex-col p-6">
+            <Package className="size-7 text-primary" aria-hidden />
+            <h2 className="mt-3 text-lg">Disk Ração</h2>
+            <p className="mt-1 flex-1 text-sm text-muted-foreground">
+              Consulte rações e ofertas disponíveis na {store.name}.
+            </p>
+            <Button asChild variant="hero" className="mt-4">
+              <Link to="/catalogo">Explorar catálogo</Link>
+            </Button>
+          </article>
+
+          <article className="surface-card flex flex-col p-6">
+            <Scissors className="size-7 text-info" aria-hidden />
+            <h2 className="mt-3 text-lg">Banho e Tosa</h2>
+            <p className="mt-1 flex-1 text-sm text-muted-foreground">
+              Agende o banho ou a tosa do seu pet direto pelo WhatsApp.
+            </p>
+            <Button asChild variant="outline" className="mt-4">
+              <Link to="/servicos">Ver serviços</Link>
+            </Button>
+          </article>
+        </div>
+      </section>
+
+      {/* 8. Como funciona */}
+      <section className="container-page pb-12">
         <h2 className="text-2xl">Como funciona</h2>
         <p className="mt-2 text-muted-foreground">
           Catálogo → interesse → WhatsApp → atendimento → venda.

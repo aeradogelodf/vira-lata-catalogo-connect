@@ -303,7 +303,6 @@ export function BannersManager() {
         onOpenChange={(open) => !open && setPendingDelete(null)}
       >
         <AlertDialogContent>
-          <AlertDialogTitle className="sr-only">Excluir banner</AlertDialogTitle>
           <AlertDialogHeader>
             <AlertDialogTitle>Excluir “{pendingDelete?.title}”?</AlertDialogTitle>
             <AlertDialogDescription>
