@@ -194,7 +194,6 @@ function Index() {
               <li key={category.id}>
                 <Link
                   to="/catalogo"
-                  search={{ categoria: category.slug }}
                   className="surface-card flex h-full flex-col items-center gap-2 p-4 text-center transition-shadow hover:shadow-md focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
                 >
                   <Package className="size-6 text-primary" aria-hidden />
@@ -255,7 +254,6 @@ function Index() {
             </div>
             <Link
               to="/catalogo"
-              search={{ promocoes: true }}
               className="inline-flex items-center gap-1 text-sm font-semibold text-primary hover:underline"
             >
               Ver ofertas <ArrowRight className="size-4" aria-hidden />
