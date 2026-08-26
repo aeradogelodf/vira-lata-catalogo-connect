@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { useStore } from "@/hooks/use-store";
 import { formatPrice } from "@/lib/catalog";
 import { serviceQueries } from "@/lib/services-queries";
+import { SITE_URL } from "@/lib/site";
 import { storeQueries } from "@/lib/store-queries";
 import { whatsappMessages, whatsappUrl } from "@/lib/whatsapp";
 
@@ -28,10 +29,10 @@ export const Route = createFileRoute("/servicos")({
       { property: "og:title", content: "Serviços para pets — Agropet Vira Lata" },
       { property: "og:description", content: "Banho e tosa e outros serviços para o seu animal." },
       { property: "og:type", content: "website" },
-      { property: "og:url", content: "/servicos" },
+      { property: "og:url", content: `${SITE_URL}/servicos` },
       { name: "twitter:card", content: "summary_large_image" },
     ],
-    links: [{ rel: "canonical", href: "/servicos" }],
+    links: [{ rel: "canonical", href: `${SITE_URL}/servicos` }],
   }),
   errorComponent: () => (
     <div className="container-page py-10">
