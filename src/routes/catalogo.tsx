@@ -29,7 +29,7 @@ import {
   type SortOption,
 } from "@/lib/catalog";
 
-const SITE = "https://vira-lata-catalogo-connect.lovable.app";
+import { SITE_URL as SITE } from "@/lib/site";
 
 export const Route = createFileRoute("/catalogo")({
   loader: async ({ context }) => {

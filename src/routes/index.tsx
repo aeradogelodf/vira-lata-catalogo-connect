@@ -20,6 +20,7 @@ import { bannerQueries } from "@/lib/banners-queries";
 import { buildIndexes, isPromotion } from "@/lib/catalog";
 import { catalogQueries } from "@/lib/catalog-queries";
 import { serviceQueries } from "@/lib/services-queries";
+import { SITE_URL } from "@/lib/site";
 import { storeQueries } from "@/lib/store-queries";
 import { formatAddress, type StoreInfo } from "@/lib/store-settings";
 import { localBusinessJsonLd, organizationJsonLd } from "@/lib/store-seo";
@@ -27,13 +28,14 @@ import { whatsappMessages, whatsappUrl } from "@/lib/whatsapp";
 
 export const Route = createFileRoute("/")({
   loader: async ({ context }) => {
-    await Promise.all([
+    const [store] = await Promise.all([
       context.queryClient.ensureQueryData(storeQueries.settings()),
       context.queryClient.ensureQueryData(bannerQueries.public()),
       context.queryClient.ensureQueryData(catalogQueries.categories()),
       context.queryClient.ensureQueryData(catalogQueries.products()),
       context.queryClient.ensureQueryData(serviceQueries.public()),
     ]);
+    return store;
   },
   head: ({ loaderData }) => {
     const store = loaderData as StoreInfo | undefined;
@@ -54,10 +56,10 @@ export const Route = createFileRoute("/")({
         { property: "og:title", content: `${name} — Catálogo digital` },
         { property: "og:description", content: description },
         { property: "og:type", content: "website" },
-        { property: "og:url", content: "/" },
+        { property: "og:url", content: `${SITE_URL}/` },
         { name: "twitter:card", content: "summary_large_image" },
       ],
-      links: [{ rel: "canonical", href: "/" }],
+      links: [{ rel: "canonical", href: `${SITE_URL}/` }],
       scripts: store
         ? [
             {

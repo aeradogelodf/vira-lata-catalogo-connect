@@ -3,6 +3,7 @@ import { Clock, Globe, Mail, MapPin, Phone } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { useStore } from "@/hooks/use-store";
+import { SITE_URL } from "@/lib/site";
 import { storeQueries } from "@/lib/store-queries";
 import { formatAddress, type StoreInfo } from "@/lib/store-settings";
 import { localBusinessJsonLd } from "@/lib/store-seo";
@@ -25,10 +26,10 @@ export const Route = createFileRoute("/contato")({
         { property: "og:title", content: title },
         { property: "og:description", content: `Endereço, horários e WhatsApp da ${name}.` },
         { property: "og:type", content: "website" },
-        { property: "og:url", content: "/contato" },
+        { property: "og:url", content: `${SITE_URL}/contato` },
         { name: "twitter:card", content: "summary_large_image" },
       ],
-      links: [{ rel: "canonical", href: "/contato" }],
+      links: [{ rel: "canonical", href: `${SITE_URL}/contato` }],
       scripts: store
         ? [
             {

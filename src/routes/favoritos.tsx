@@ -7,6 +7,7 @@ import { ProductCard, ProductCardSkeleton } from "@/components/catalog/ProductCa
 import { Button } from "@/components/ui/button";
 import { useFavorites } from "@/hooks/use-favorites";
 import { catalogQueries } from "@/lib/catalog-queries";
+import { SITE_URL } from "@/lib/site";
 import { whatsappMessages, whatsappUrl } from "@/lib/whatsapp";
 
 export const Route = createFileRoute("/favoritos")({
@@ -28,10 +29,10 @@ export const Route = createFileRoute("/favoritos")({
       { property: "og:title", content: "Meus favoritos — Agropet Vira Lata" },
       { property: "og:description", content: "Sua lista de produtos de interesse." },
       { property: "og:type", content: "website" },
-      { property: "og:url", content: "/favoritos" },
+      { property: "og:url", content: `${SITE_URL}/favoritos` },
       { name: "robots", content: "noindex" },
     ],
-    links: [{ rel: "canonical", href: "/favoritos" }],
+    links: [{ rel: "canonical", href: `${SITE_URL}/favoritos` }],
   }),
   component: FavoritosPage,
 });
