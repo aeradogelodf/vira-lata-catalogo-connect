@@ -33,6 +33,19 @@ export const Route = createFileRoute("/servicos")({
       { name: "twitter:card", content: "summary_large_image" },
     ],
     links: [{ rel: "canonical", href: `${SITE_URL}/servicos` }],
+    scripts: [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "BreadcrumbList",
+          itemListElement: [
+            { "@type": "ListItem", position: 1, name: "Início", item: `${SITE_URL}/` },
+            { "@type": "ListItem", position: 2, name: "Serviços", item: `${SITE_URL}/servicos` },
+          ],
+        }),
+      },
+    ],
   }),
   errorComponent: () => (
     <div className="container-page py-10">
@@ -85,10 +98,14 @@ function ServicosPage() {
             <li key={service.id} className="surface-card flex flex-col overflow-hidden">
               {service.imageUrl ? (
                 <img
+                  suppressHydrationWarning
                   src={service.imageUrl}
                   alt={`Serviço ${service.name} na ${store.name}`}
+                  width={800}
+                  height={600}
                   className="aspect-[4/3] w-full object-cover"
                   loading="lazy"
+                  decoding="async"
                 />
               ) : (
                 <div className="grid aspect-[4/3] w-full place-items-center bg-secondary" aria-hidden>

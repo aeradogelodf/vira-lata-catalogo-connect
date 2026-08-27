@@ -52,10 +52,14 @@ export function BannerCarousel({
                 <article className="surface-card relative overflow-hidden">
                   {banner.imageUrl ? (
                     <img
+                      suppressHydrationWarning
                       src={banner.imageUrl}
                       alt={banner.altText ?? banner.title}
+                      width={1280}
+                      height={480}
                       className="h-48 w-full object-cover sm:h-64 lg:h-80"
                       loading={index === 0 ? "eager" : "lazy"}
+                      fetchPriority={index === 0 ? "high" : "auto"}
                       decoding="async"
                     />
                   ) : (
