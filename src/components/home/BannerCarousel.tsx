@@ -52,6 +52,7 @@ export function BannerCarousel({
                 <article className="surface-card relative overflow-hidden">
                   {banner.imageUrl ? (
                     <img
+                      suppressHydrationWarning
                       src={banner.imageUrl}
                       alt={banner.altText ?? banner.title}
                       width={1280}

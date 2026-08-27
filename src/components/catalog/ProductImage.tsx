@@ -34,6 +34,9 @@ export function ProductImage({
 
   return (
     <img
+      // O token da URL assinada é regerado a cada assinatura: o src do SSR e o
+      // do cliente diferem legitimamente, sem impacto visual.
+      suppressHydrationWarning
       src={image.url}
       alt={image.alt ?? product.name}
       width={800}

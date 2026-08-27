@@ -295,6 +295,7 @@ function Index() {
               <li key={service.id} className="surface-card flex flex-col overflow-hidden">
                 {service.imageUrl ? (
                   <img
+                    suppressHydrationWarning
                     src={service.imageUrl}
                     alt={`Serviço ${service.name} na ${store.name}`}
                     width={800}
