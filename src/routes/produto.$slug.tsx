@@ -16,7 +16,7 @@ import { catalogQueries } from "@/lib/catalog-queries";
 import { formatPrice, isPromotion, relatedProducts } from "@/lib/catalog";
 import { whatsappMessages, whatsappUrl } from "@/lib/whatsapp";
 
-const SITE = "https://vira-lata-catalogo-connect.lovable.app";
+import { SITE_URL as SITE } from "@/lib/site";
 
 export const Route = createFileRoute("/produto/$slug")({
   loader: async ({ params, context }) => {
@@ -49,6 +49,12 @@ export const Route = createFileRoute("/produto/$slug")({
       `${product.name} no catálogo da ${store.name}. Peça informações pelo WhatsApp.`;
     const title = product.seoTitle ?? `${product.name} — ${store.name}`;
 
+    // Imagens do Storage privado são URLs assinadas (expiram) — só usamos
+    // como og:image quando a URL é absoluta e estável (http/https públicas).
+    const image = product.images[0]?.url;
+    const absoluteImage =
+      image && /^https?:\/\//.test(image) && !image.includes("/object/sign/") ? image : null;
+
     return {
       meta: [
         { title },
@@ -58,6 +64,14 @@ export const Route = createFileRoute("/produto/$slug")({
         { property: "og:type", content: "product" },
         { property: "og:url", content: url },
         { name: "twitter:card", content: "summary_large_image" },
+        { name: "twitter:title", content: title },
+        { name: "twitter:description", content: description },
+        ...(absoluteImage
+          ? [
+              { property: "og:image", content: absoluteImage },
+              { name: "twitter:image", content: absoluteImage },
+            ]
+          : []),
       ],
       links: [{ rel: "canonical", href: url }],
       scripts: [
@@ -69,7 +83,7 @@ export const Route = createFileRoute("/produto/$slug")({
             name: product.name,
             url,
             ...(product.description ? { description: product.description } : {}),
-            ...(product.images[0] ? { image: product.images.map((i) => i.url) } : {}),
+            ...(absoluteImage ? { image: [absoluteImage] } : {}),
             ...(product.promoPrice ?? product.price
               ? {
                   offers: {
@@ -80,9 +94,22 @@ export const Route = createFileRoute("/produto/$slug")({
                     availability: product.isAvailable
                       ? "https://schema.org/InStock"
                       : "https://schema.org/OutOfStock",
+                    seller: { "@type": "Organization", name: store.name },
                   },
                 }
               : {}),
+          }),
+        },
+        {
+          type: "application/ld+json",
+          children: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "BreadcrumbList",
+            itemListElement: [
+              { "@type": "ListItem", position: 1, name: "Início", item: `${SITE}/` },
+              { "@type": "ListItem", position: 2, name: "Catálogo", item: `${SITE}/catalogo` },
+              { "@type": "ListItem", position: 3, name: product.name, item: url },
+            ],
           }),
         },
       ],
