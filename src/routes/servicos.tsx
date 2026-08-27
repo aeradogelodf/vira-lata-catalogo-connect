@@ -87,8 +87,11 @@ function ServicosPage() {
                 <img
                   src={service.imageUrl}
                   alt={`Serviço ${service.name} na ${store.name}`}
+                  width={800}
+                  height={600}
                   className="aspect-[4/3] w-full object-cover"
                   loading="lazy"
+                  decoding="async"
                 />
               ) : (
                 <div className="grid aspect-[4/3] w-full place-items-center bg-secondary" aria-hidden>
