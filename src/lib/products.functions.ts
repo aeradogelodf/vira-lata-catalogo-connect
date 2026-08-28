@@ -294,11 +294,19 @@ export const deleteProduct = createServerFn({ method: "POST" })
       .from("product_images")
       .select("image_url")
       .eq("product_id", data.id);
-    const paths = (images ?? [])
-      .map((image: any) => image.image_url as string)
-      .filter((url: string) => url && !/^(https?:)?\/\//.test(url));
+    const { data: productRow } = await supabase
+      .from("products")
+      .select("image_url")
+      .eq("id", data.id)
+      .maybeSingle();
+    const paths = [
+      ...(images ?? []).map((image: any) => image.image_url as string),
+      productRow?.image_url as string | undefined,
+    ].filter(
+      (url): url is string => Boolean(url) && !/^(https?:)?\/\//.test(url as string),
+    );
     if (paths.length > 0) {
-      await supabase.storage.from("product-images").remove(paths);
+      await supabase.storage.from("product-images").remove(Array.from(new Set(paths)));
     }
 
     const { error: imagesError } = await supabase

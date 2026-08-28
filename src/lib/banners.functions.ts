@@ -140,7 +140,20 @@ export const deleteBanner = createServerFn({ method: "POST" })
   .inputValidator((data: unknown) => idInput.parse(data))
   .handler(async ({ data, context }): Promise<{ ok: true }> => {
     await assertAdmin(context);
-    const { error } = await context.supabase.from("banners").delete().eq("id", data.id);
+    const { supabase } = context;
+
+    // Remove o arquivo do Storage antes da linha para não deixar órfãos.
+    const { data: row } = await supabase
+      .from("banners")
+      .select("image_url")
+      .eq("id", data.id)
+      .maybeSingle();
+    const path = row?.image_url as string | null | undefined;
+    if (path && !/^(https?:)?\/\//.test(path)) {
+      await supabase.storage.from("product-images").remove([path]);
+    }
+
+    const { error } = await supabase.from("banners").delete().eq("id", data.id);
     if (error) throw new Error("Não foi possível excluir o banner.");
     return { ok: true };
   });
