@@ -5,6 +5,8 @@ import { Button } from "@/components/ui/button";
 import { useStore } from "@/hooks/use-store";
 import { useFavorites } from "@/hooks/use-favorites";
 import { whatsappMessages, whatsappUrl } from "@/lib/whatsapp";
+import logoAsset from "@/assets/logo-agropet-vira-lata.png.asset.json";
+
 
 const navItems = [
   { to: "/", label: "Início" },
