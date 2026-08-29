@@ -107,8 +107,9 @@ export function BannerCarousel({
 
         {banners.length > 1 && (
           <>
-            <CarouselPrevious className="hidden sm:flex" aria-label="Banner anterior" />
-            <CarouselNext className="hidden sm:flex" aria-label="Próximo banner" />
+            {/* Posicionadas dentro do container: o padrão (-left-12/-right-12) estoura a viewport. */}
+            <CarouselPrevious className="left-2 hidden sm:flex" aria-label="Banner anterior" />
+            <CarouselNext className="right-2 hidden sm:flex" aria-label="Próximo banner" />
             <div className="mt-3 flex justify-center gap-2" role="tablist" aria-label="Selecionar banner">
               {banners.map((banner, index) => (
                 <button
