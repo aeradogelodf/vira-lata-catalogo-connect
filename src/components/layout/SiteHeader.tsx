@@ -23,13 +23,15 @@ export function SiteHeader() {
     <header className="sticky top-0 z-40 border-b border-border bg-background/95 backdrop-blur">
       <div className="container-page flex h-16 items-center gap-3">
         <Link to="/" className="flex items-center gap-2" aria-label={`${store.name} — início`}>
-          <span className="grid size-9 place-items-center rounded-xl bg-primary text-primary-foreground font-display text-lg font-bold">
-            V
-          </span>
-          <span className="font-display text-base leading-tight font-bold sm:text-lg">
-            Agropet <span className="text-primary">Vira Lata</span>
-          </span>
+          <img
+            src={logoAsset.url}
+            alt={`${store.name}`}
+            width={40}
+            height={40}
+            className="h-10 w-auto rounded-full object-contain"
+          />
         </Link>
+
 
         <nav aria-label="Principal" className="ml-6 hidden items-center gap-1 md:flex">
           {navItems.map((item) => (
