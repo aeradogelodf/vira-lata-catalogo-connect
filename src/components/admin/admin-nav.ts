@@ -42,10 +42,10 @@ export const ADMIN_NAV: AdminNavItem[] = [
   { slug: "servicos", label: "Serviços", icon: Scissors, group: "Operação", ready: true },
   {
     slug: "banho-tosa",
-    label: "Banho e tosa",
+    label: "Banho & Tosa",
     icon: ScissorsLineDashed,
     group: "Operação",
-    ready: false,
+    ready: true,
   },
   { slug: "relatorios", label: "Relatórios", icon: ChartNoAxesColumn, group: "Operação", ready: false },
   { slug: "configuracoes", label: "Configurações", icon: Settings, group: "Sistema", ready: true },
