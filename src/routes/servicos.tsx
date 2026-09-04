@@ -195,9 +195,27 @@ function BanhoTosaPage() {
                   {service.description && (
                     <p className="mt-2 text-sm text-muted-foreground">{service.description}</p>
                   )}
-                  {/* Preço só é exibido quando existe valor real cadastrado.
-                      Estrutura preparada para preços por porte em etapa futura. */}
-                  {service.price !== null || service.priceNote ? (
+                  {/* Preços reais por porte quando configurados no painel;
+                      caso contrário o preço único do serviço, se existir. */}
+                  {service.prices.length > 0 ? (
+                    <ul className="mt-3 space-y-1">
+                      {service.prices.map((entry) => (
+                        <li
+                          key={entry.sizeId}
+                          className="flex items-baseline justify-between gap-3 text-sm"
+                        >
+                          <span className="text-muted-foreground">{entry.sizeName}</span>
+                          <span className="font-display font-bold">
+                            {formatPrice(entry.price)}
+                            <span className="ml-2 text-xs font-normal text-muted-foreground">
+                              {formatDuration(entry.durationMinutes)}
+                              {entry.note ? ` · ${entry.note}` : ""}
+                            </span>
+                          </span>
+                        </li>
+                      ))}
+                    </ul>
+                  ) : service.price !== null || service.priceNote ? (
                     <p className="mt-3 font-display text-base">
                       {service.price !== null ? formatPrice(service.price) : null}
                       {service.priceNote && (
@@ -209,6 +227,7 @@ function BanhoTosaPage() {
                   ) : (
                     <p className="mt-3 text-sm text-muted-foreground">Preço sob consulta</p>
                   )}
+
                   <Button asChild variant="whatsapp" className="mt-4 w-full">
                     <a
                       href={whatsappUrl(whatsappMessages.service(service.name, store), store)}
