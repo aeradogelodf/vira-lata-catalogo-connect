@@ -74,15 +74,20 @@ export const savePetSize = createServerFn({ method: "POST" })
     const values = data.values;
 
     // Integridade também no servidor: nome e identificador únicos.
-    let dup = supabase
-      .from("pet_sizes")
-      .select("id, name, slug")
-      .or(`slug.eq.${values.slug},name.ilike.${values.name}`)
-      .limit(2);
-    if (data.id) dup = dup.neq("id", data.id);
-    const { data: duplicates, error: dupError } = await dup;
-    if (dupError) throw new Error("Não foi possível validar o porte.");
-    if ((duplicates ?? []).length > 0) throw new Error("Já existe um porte com este nome ou identificador.");
+    // Duas consultas exatas evitam que vírgulas, "%" ou "_" no nome quebrem
+    // a sintaxe do filtro combinado e gerem falsos positivos.
+    const excludeSelf = <T extends { neq: (c: string, v: string) => T }>(query: T) =>
+      data.id ? query.neq("id", data.id) : query;
+
+    const [bySlug, byName] = await Promise.all([
+      excludeSelf(supabase.from("pet_sizes").select("id").eq("slug", values.slug).limit(1)),
+      excludeSelf(supabase.from("pet_sizes").select("id").ilike("name", values.name).limit(1)),
+    ]);
+
+    if (bySlug.error || byName.error) throw new Error("Não foi possível validar o porte.");
+    if ((bySlug.data ?? []).length > 0) throw new Error("Já existe um porte com este identificador.");
+    if ((byName.data ?? []).length > 0) throw new Error("Já existe um porte com este nome.");
+
 
     const payload = {
       name: values.name,
