@@ -1,5 +1,5 @@
 # Roadmap
 
 - [x] Auditar a Home e os componentes visuais existentes
-- [ ] Reorganizar e atualizar visualmente a Home
-- [ ] Validar Home, navegação, WhatsApp e responsividade
+- [x] Reorganizar e atualizar visualmente a Home
+- [x] Validar Home, navegação, WhatsApp e responsividade
