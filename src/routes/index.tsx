@@ -2,14 +2,12 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import {
   ArrowRight,
-  BadgePercent,
   Clock,
-  Heart,
   MapPin,
   MessageCircle,
   Package,
-  Scissors,
-  Tag,
+  Phone,
+  ShoppingBag,
 } from "lucide-react";
 
 import { ProductCard } from "@/components/catalog/ProductCard";
@@ -17,7 +15,7 @@ import { BannerCarousel } from "@/components/home/BannerCarousel";
 import { Button } from "@/components/ui/button";
 import { useStore } from "@/hooks/use-store";
 import { bannerQueries } from "@/lib/banners-queries";
-import { buildIndexes, isPromotion } from "@/lib/catalog";
+import { buildIndexes } from "@/lib/catalog";
 import { catalogQueries } from "@/lib/catalog-queries";
 import { serviceQueries } from "@/lib/services-queries";
 import { SITE_URL } from "@/lib/site";
@@ -77,33 +75,6 @@ export const Route = createFileRoute("/")({
   component: Index,
 });
 
-const pillars = [
-  {
-    icon: Tag,
-    title: "Catálogo organizado",
-    text: "Categorias, marcas, busca e filtros para encontrar rápido.",
-    tone: "text-primary",
-  },
-  {
-    icon: Heart,
-    title: "Favoritos",
-    text: "Salve produtos de interesse no seu aparelho e volte quando quiser.",
-    tone: "text-brand-red",
-  },
-  {
-    icon: Scissors,
-    title: "Serviços",
-    text: "Banho e tosa e outros serviços, com agendamento pelo WhatsApp.",
-    tone: "text-info",
-  },
-  {
-    icon: MessageCircle,
-    title: "Atendimento humano",
-    text: "Sem checkout: você fala direto com a loja e fecha pelo WhatsApp.",
-    tone: "text-success",
-  },
-];
-
 function Index() {
   const store = useStore();
   const address = formatAddress(store);
@@ -111,68 +82,57 @@ function Index() {
   const { data: banners } = useSuspenseQuery(bannerQueries.public());
   const { data: categories } = useSuspenseQuery(catalogQueries.categories());
   const { data: products } = useSuspenseQuery(catalogQueries.products());
-  const { data: services } = useSuspenseQuery(serviceQueries.public());
+  useSuspenseQuery(serviceQueries.public());
 
   const indexes = buildIndexes(categories, []);
   const featured = products.filter((product) => product.isFeatured).slice(0, 8);
-  const promotions = products.filter(isPromotion).slice(0, 8);
-  const featuredServices = services.filter((service) => service.featured).slice(0, 3);
   const visibleCategories = categories.slice(0, 6);
 
   return (
     <>
       {/* 1. Hero institucional */}
-      <section className="bg-gradient-to-b from-secondary/60 to-background">
-        <div className="container-page grid gap-8 py-12 sm:py-16 lg:grid-cols-2 lg:items-center">
-          <div>
-            <span className="inline-flex items-center gap-2 rounded-full bg-warning/25 px-3 py-1 text-xs font-semibold text-warning-foreground">
-              Catálogo digital oficial
-            </span>
-            <h1 className="mt-4 text-3xl leading-tight sm:text-4xl lg:text-5xl">
-              Tudo para o seu animal na{" "}
-              <span className="text-primary">{store.name}</span>
-            </h1>
-            <p className="mt-4 max-w-xl text-muted-foreground">
-              Veja os produtos, salve seus favoritos e fale com a loja pelo WhatsApp. Simples,
-              rápido e sem burocracia.
-            </p>
-            <div className="mt-6 flex flex-wrap gap-3">
-              <Button asChild variant="hero" size="xl">
-                <Link to="/catalogo">Ver catálogo</Link>
-              </Button>
-              <Button asChild variant="whatsapp" size="xl">
-                <a
-                  href={whatsappUrl(whatsappMessages.general(store), store)}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  Falar no WhatsApp
-                </a>
-              </Button>
-            </div>
-            <p className="mt-4 text-sm text-muted-foreground">
-              WhatsApp {store.whatsapp.display ?? store.whatsapp.e164}
-            </p>
+      <section className="relative overflow-hidden border-b border-border bg-secondary/50">
+        <div className="absolute inset-x-0 top-0 grid h-1 grid-cols-4" aria-hidden>
+          <span className="bg-brand-red" />
+          <span className="bg-brand-green" />
+          <span className="bg-brand-blue" />
+          <span className="bg-brand-yellow" />
+        </div>
+        <div className="container-page flex min-h-[34rem] flex-col items-center justify-center py-14 text-center sm:min-h-[36rem] sm:py-16 lg:min-h-[38rem]">
+          <span className="inline-flex items-center gap-2 rounded-full border border-border bg-background px-3 py-1.5 text-xs font-semibold text-muted-foreground shadow-sm">
+            <span className="size-2 rounded-full bg-success" aria-hidden />
+            Catálogo digital oficial
+          </span>
+          <h1 className="mt-6 max-w-4xl text-4xl leading-tight sm:text-5xl lg:text-6xl">
+            Tudo para o seu animal na{" "}
+            <span className="text-primary">{store.name}</span>
+          </h1>
+          <p className="mt-5 max-w-2xl text-base leading-relaxed text-muted-foreground sm:text-lg">
+            Veja os produtos, salve seus favoritos e fale com a loja pelo WhatsApp. Simples,
+            rápido e sem burocracia.
+          </p>
+          <div className="mt-8 grid w-full max-w-md gap-3 sm:grid-cols-2">
+            <Button asChild variant="hero" size="xl" className="h-14 w-full shadow-[var(--shadow-cta)]">
+              <Link to="/catalogo">
+                <ShoppingBag className="size-5" aria-hidden />
+                Ver catálogo
+              </Link>
+            </Button>
+            <Button asChild variant="whatsapp" size="xl" className="h-14 w-full">
+              <a
+                href={whatsappUrl(whatsappMessages.general(store), store)}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={`Falar com a ${store.name} no WhatsApp`}
+              >
+                <MessageCircle className="size-5" aria-hidden />
+                Falar no WhatsApp
+              </a>
+            </Button>
           </div>
-
-          <div className="surface-card p-6">
-            <h2 className="text-lg">Informações da loja</h2>
-            <p className="mt-3 flex gap-2 text-sm text-muted-foreground">
-              <MapPin className="mt-0.5 size-4 shrink-0 text-primary" aria-hidden />
-              {address}
-            </p>
-            <div className="mt-4 flex gap-2 text-sm text-muted-foreground">
-              <Clock className="mt-0.5 size-4 shrink-0 text-info" aria-hidden />
-              <ul className="w-full space-y-1">
-                {store.openingHours.map((h) => (
-                  <li key={h.day} className="flex justify-between gap-4">
-                    <span>{h.label}</span>
-                    <span>{h.opensAt && h.closesAt ? `${h.opensAt} às ${h.closesAt}` : "Fechado"}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </div>
+          <p className="mt-5 text-sm text-muted-foreground">
+            Atendimento direto, sem checkout e sem burocracia.
+          </p>
         </div>
       </section>
 
@@ -181,25 +141,31 @@ function Index() {
 
       {/* 3. Categorias */}
       {visibleCategories.length > 0 && (
-        <section className="container-page py-10">
-          <div className="flex items-end justify-between gap-4">
-            <h2 className="text-2xl">Navegue por categoria</h2>
+        <section className="container-page py-12 sm:py-16">
+          <div className="grid grid-cols-[minmax(0,1fr)_auto] items-end gap-4">
+            <div className="min-w-0">
+              <p className="text-xs font-bold text-primary uppercase">Encontre mais rápido</p>
+              <h2 className="mt-1 text-2xl sm:text-3xl">Navegue por categoria</h2>
+            </div>
             <Link
               to="/catalogo"
-              className="inline-flex items-center gap-1 text-sm font-semibold text-primary hover:underline"
+              className="inline-flex shrink-0 items-center gap-1 text-sm font-semibold text-primary underline-offset-4 transition-colors hover:text-primary/80 hover:underline focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
             >
-              Ver catálogo <ArrowRight className="size-4" aria-hidden />
+              <span className="hidden sm:inline">Ver catálogo</span>
+              <ArrowRight className="size-4" aria-hidden />
             </Link>
           </div>
-          <ul className="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
+          <ul className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
             {visibleCategories.map((category) => (
               <li key={category.id}>
                 <Link
                   to="/catalogo"
-                  className="surface-card flex h-full flex-col items-center gap-2 p-4 text-center transition-shadow hover:shadow-md focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
+                  className="surface-card group flex min-h-32 h-full flex-col items-center justify-center gap-3 p-4 text-center transition-[transform,box-shadow,border-color] duration-200 hover:-translate-y-1 hover:border-primary/30 hover:shadow-lg focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
                 >
-                  <Package className="size-6 text-primary" aria-hidden />
-                  <span className="text-sm font-semibold">{category.name}</span>
+                  <span className="grid size-11 place-items-center rounded-full bg-secondary transition-colors group-hover:bg-primary/10">
+                    <Package className="size-5 text-primary" aria-hidden />
+                  </span>
+                  <span className="text-sm leading-snug font-bold">{category.name}</span>
                 </Link>
               </li>
             ))}
@@ -209,22 +175,25 @@ function Index() {
 
       {/* 4. Produtos em destaque */}
       {featured.length > 0 && (
-        <section className="container-page py-10">
-          <div className="flex items-end justify-between gap-4">
-            <div>
-              <h2 className="text-2xl">Destaques da loja</h2>
+        <section className="border-y border-border bg-secondary/35 py-12 sm:py-16">
+          <div className="container-page">
+          <div className="grid grid-cols-[minmax(0,1fr)_auto] items-end gap-4">
+            <div className="min-w-0">
+              <p className="text-xs font-bold text-primary uppercase">Escolhas da loja</p>
+              <h2 className="mt-1 text-2xl sm:text-3xl">Destaques da loja</h2>
               <p className="mt-1 text-sm text-muted-foreground">
                 Seleção feita pela {store.name}.
               </p>
             </div>
             <Link
               to="/catalogo"
-              className="inline-flex items-center gap-1 text-sm font-semibold text-primary hover:underline"
+              className="inline-flex shrink-0 items-center gap-1 text-sm font-semibold text-primary underline-offset-4 transition-colors hover:text-primary/80 hover:underline focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
             >
-              Ver tudo <ArrowRight className="size-4" aria-hidden />
+              <span className="hidden sm:inline">Ver tudo</span>
+              <ArrowRight className="size-4" aria-hidden />
             </Link>
           </div>
-          <ul className="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
+          <ul className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 lg:grid-cols-4">
             {featured.map((product) => (
               <li key={product.id}>
                 <ProductCard
@@ -238,162 +207,84 @@ function Index() {
               </li>
             ))}
           </ul>
+          </div>
         </section>
       )}
 
-      {/* 5. Promoções */}
-      {promotions.length > 0 && (
-        <section className="container-page py-10">
-          <div className="flex items-end justify-between gap-4">
-            <div>
-              <h2 className="text-2xl">
-                <BadgePercent className="mr-2 inline size-6 text-warning" aria-hidden />
-                Promoções
-              </h2>
-              <p className="mt-1 text-sm text-muted-foreground">
-                Ofertas ativas — aproveite pelo WhatsApp.
+      {/* 5. Informações da loja */}
+      <section className="container-page py-12 sm:py-16">
+        <div className="surface-card overflow-hidden">
+          <div className="grid lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)]">
+            <div className="border-b border-border bg-primary p-6 text-primary-foreground sm:p-8 lg:border-r lg:border-b-0">
+              <p className="text-xs font-bold uppercase opacity-80">Visite a nossa loja</p>
+              <h2 className="mt-2 text-2xl sm:text-3xl">Informações da loja</h2>
+              <p className="mt-3 max-w-md text-sm leading-relaxed opacity-90">
+                Encontre tudo para o seu animal e conte com atendimento direto da nossa equipe.
               </p>
+              <Button asChild variant="whatsapp" size="lg" className="mt-6 w-full sm:w-auto">
+                <a
+                  href={whatsappUrl(whatsappMessages.general(store), store)}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={`Falar com a ${store.name} no WhatsApp`}
+                >
+                  <MessageCircle className="size-4" aria-hidden />
+                  Falar no WhatsApp
+                </a>
+              </Button>
             </div>
-            <Link
-              to="/catalogo"
-              className="inline-flex items-center gap-1 text-sm font-semibold text-primary hover:underline"
-            >
-              Ver ofertas <ArrowRight className="size-4" aria-hidden />
-            </Link>
-          </div>
-          <ul className="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
-            {promotions.map((product) => (
-              <li key={product.id}>
-                <ProductCard
-                  product={product}
-                  category={
-                    product.categoryId
-                      ? indexes.categoriesById.get(product.categoryId)
-                      : undefined
-                  }
-                />
-              </li>
-            ))}
-          </ul>
-        </section>
-      )}
-
-      {/* 6. Serviços em destaque */}
-      {featuredServices.length > 0 && (
-        <section className="container-page py-10">
-          <div className="flex items-end justify-between gap-4">
-            <h2 className="text-2xl">Serviços em destaque</h2>
-            <Link
-              to="/servicos"
-              className="inline-flex items-center gap-1 text-sm font-semibold text-primary hover:underline"
-            >
-              Ver serviços <ArrowRight className="size-4" aria-hidden />
-            </Link>
-          </div>
-          <ul className="mt-5 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {featuredServices.map((service) => (
-              <li key={service.id} className="surface-card flex flex-col overflow-hidden">
-                {service.imageUrl ? (
-                  <img
-                    suppressHydrationWarning
-                    src={service.imageUrl}
-                    alt={`Serviço ${service.name} na ${store.name}`}
-                    width={800}
-                    height={600}
-                    className="aspect-[4/3] w-full object-cover"
-                    loading="lazy"
-                    decoding="async"
-                  />
-                ) : (
-                  <div
-                    className="grid aspect-[4/3] w-full place-items-center bg-secondary"
-                    aria-hidden
-                  >
-                    <Scissors className="size-8 text-muted-foreground" />
+            <div className="grid gap-6 p-6 sm:grid-cols-2 sm:p-8">
+              <div className="space-y-5">
+                {address && (
+                  <div className="flex gap-3">
+                    <span className="grid size-10 shrink-0 place-items-center rounded-full bg-primary/10">
+                      <MapPin className="size-5 text-primary" aria-hidden />
+                    </span>
+                    <div className="min-w-0">
+                      <h3 className="text-base">Endereço</h3>
+                      <address className="mt-1 text-sm leading-relaxed not-italic text-muted-foreground">
+                        {address}
+                      </address>
+                    </div>
                   </div>
                 )}
-                <div className="flex flex-1 flex-col p-4">
-                  <h3 className="font-display text-base font-bold">{service.name}</h3>
-                  {service.description && (
-                    <p className="mt-1 line-clamp-2 text-sm text-muted-foreground">
-                      {service.description}
-                    </p>
-                  )}
-                  <Button asChild variant="whatsapp" size="sm" className="mt-3 w-full">
-                    <a
-                      href={whatsappUrl(whatsappMessages.service(service.name, store), store)}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      aria-label={`Falar no WhatsApp sobre o serviço ${service.name}`}
-                    >
-                      Agendar no WhatsApp
-                    </a>
-                  </Button>
+                {store.phone && (
+                  <div className="flex gap-3">
+                    <span className="grid size-10 shrink-0 place-items-center rounded-full bg-success/10">
+                      <Phone className="size-5 text-success" aria-hidden />
+                    </span>
+                    <div className="min-w-0">
+                      <h3 className="text-base">Telefone</h3>
+                      <p className="mt-1 text-sm text-muted-foreground">{store.phone}</p>
+                    </div>
+                  </div>
+                )}
+              </div>
+              <div className="flex gap-3">
+                <span className="grid size-10 shrink-0 place-items-center rounded-full bg-info/10">
+                  <Clock className="size-5 text-info" aria-hidden />
+                </span>
+                <div className="min-w-0 flex-1">
+                  <h3 className="text-base">Horário de funcionamento</h3>
+                  <ul className="mt-2 space-y-1.5 text-sm text-muted-foreground">
+                    {store.openingHours.map((hour) => (
+                      <li
+                        key={hour.day}
+                        className="grid grid-cols-[minmax(0,1fr)_auto] items-baseline gap-3"
+                      >
+                        <span className="min-w-0">{hour.label}</span>
+                        <span className="shrink-0 text-right">
+                          {hour.opensAt && hour.closesAt
+                            ? `${hour.opensAt} às ${hour.closesAt}`
+                            : "Fechado"}
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
                 </div>
-              </li>
-            ))}
-          </ul>
-        </section>
-      )}
-
-      {/* 7. CTAs inteligentes */}
-      <section className="container-page py-10">
-        <div className="grid gap-4 sm:grid-cols-3">
-          <article className="surface-card flex flex-col p-6">
-            <MessageCircle className="size-7 text-success" aria-hidden />
-            <h2 className="mt-3 text-lg">Peça pelo WhatsApp</h2>
-            <p className="mt-1 flex-1 text-sm text-muted-foreground">
-              Montou a lista? Envie direto para a loja e receba atendimento humano.
-            </p>
-            <Button asChild variant="whatsapp" className="mt-4">
-              <a
-                href={whatsappUrl(whatsappMessages.general(store), store)}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                Chamar no WhatsApp
-              </a>
-            </Button>
-          </article>
-
-          <article className="surface-card flex flex-col p-6">
-            <Package className="size-7 text-primary" aria-hidden />
-            <h2 className="mt-3 text-lg">Disk Ração</h2>
-            <p className="mt-1 flex-1 text-sm text-muted-foreground">
-              Consulte rações e ofertas disponíveis na {store.name}.
-            </p>
-            <Button asChild variant="hero" className="mt-4">
-              <Link to="/catalogo">Explorar catálogo</Link>
-            </Button>
-          </article>
-
-          <article className="surface-card flex flex-col p-6">
-            <Scissors className="size-7 text-info" aria-hidden />
-            <h2 className="mt-3 text-lg">Banho e Tosa</h2>
-            <p className="mt-1 flex-1 text-sm text-muted-foreground">
-              Agende o banho ou a tosa do seu pet direto pelo WhatsApp.
-            </p>
-            <Button asChild variant="outline" className="mt-4">
-              <Link to="/servicos">Ver serviços</Link>
-            </Button>
-          </article>
-        </div>
-      </section>
-
-      {/* 8. Como funciona */}
-      <section className="container-page pb-12">
-        <h2 className="text-2xl">Como funciona</h2>
-        <p className="mt-2 text-muted-foreground">
-          Catálogo → interesse → WhatsApp → atendimento → venda.
-        </p>
-        <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          {pillars.map((p) => (
-            <article key={p.title} className="surface-card p-5">
-              <p.icon className={`size-6 ${p.tone}`} aria-hidden />
-              <h3 className="mt-3 text-base">{p.title}</h3>
-              <p className="mt-1 text-sm text-muted-foreground">{p.text}</p>
-            </article>
-          ))}
+              </div>
+            </div>
+          </div>
         </div>
       </section>
     </>
