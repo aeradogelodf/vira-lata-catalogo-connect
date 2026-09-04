@@ -6,6 +6,7 @@ import { EmptyState } from "@/components/catalog/EmptyState";
 import { Button } from "@/components/ui/button";
 import { useStore } from "@/hooks/use-store";
 import { formatPrice } from "@/lib/catalog";
+import { formatDuration } from "@/lib/grooming";
 import { serviceQueries } from "@/lib/services-queries";
 import { SITE_URL } from "@/lib/site";
 import { storeQueries } from "@/lib/store-queries";
