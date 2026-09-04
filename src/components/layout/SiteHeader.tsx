@@ -11,7 +11,7 @@ import logoAsset from "@/assets/logo-agropet-vira-lata.png.asset.json";
 const navItems = [
   { to: "/", label: "Início" },
   { to: "/catalogo", label: "Catálogo" },
-  { to: "/servicos", label: "Serviços" },
+  { to: "/servicos", label: "Banho & Tosa" },
   { to: "/contato", label: "Contato" },
 ] as const;
 

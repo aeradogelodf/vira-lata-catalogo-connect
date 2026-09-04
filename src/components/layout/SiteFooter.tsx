@@ -66,7 +66,7 @@ export function SiteFooter() {
               Catálogo
             </Link>
             <Link to="/servicos" className="text-muted-foreground hover:text-foreground">
-              Serviços
+              Banho &amp; Tosa
             </Link>
             <Link to="/contato" className="text-muted-foreground hover:text-foreground">
               Contato
