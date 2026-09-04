@@ -1,5 +1,6 @@
 import { z } from "zod";
 
+import type { PublicServicePrice } from "@/lib/grooming";
 import { slugify } from "@/lib/taxonomy";
 
 export { slugify };
@@ -68,6 +69,8 @@ export type PublicService = {
   priceNote: string | null;
   imageUrl: string | null;
   featured: boolean;
+  /** Preços e duração por porte (vazio quando ainda não configurado). */
+  prices: PublicServicePrice[];
 };
 
 export const SERVICE_IMAGE_PREFIX = "servicos";
