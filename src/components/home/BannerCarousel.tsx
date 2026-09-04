@@ -38,7 +38,7 @@ export function BannerCarousel({
   if (banners.length === 0) return null;
 
   return (
-    <section className="container-page pt-6" aria-label="Campanhas em destaque">
+    <section className="container-page py-8 sm:py-10" aria-label="Campanhas em destaque">
       <Carousel
         setApi={setApi}
         opts={{ loop: banners.length > 1, align: "start" }}
