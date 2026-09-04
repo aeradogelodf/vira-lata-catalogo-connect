@@ -73,7 +73,8 @@ export function mapStoreRow(row: Row): StoreInfo {
 
 export async function fetchStoreSettings(): Promise<StoreInfo> {
   const { data, error } = await supabase
-    .from("store_settings")
+    // Visão pública: expõe apenas as colunas institucionais do catálogo.
+    .from("store_settings_public")
     .select(FIELDS)
     .limit(1)
     .maybeSingle();
