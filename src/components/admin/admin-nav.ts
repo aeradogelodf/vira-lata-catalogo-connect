@@ -29,7 +29,7 @@ export type AdminNavItem = {
 };
 
 export const ADMIN_NAV: AdminNavItem[] = [
-  { slug: "", label: "Dashboard", icon: LayoutDashboard, group: "Visão geral", ready: true },
+  { slug: "", label: "Central de Controle", icon: LayoutDashboard, group: "Visão geral", ready: true },
   { slug: "produtos", label: "Produtos", icon: Package, group: "Catálogo", ready: true },
   { slug: "categorias", label: "Categorias", icon: Tags, group: "Catálogo", ready: true },
   { slug: "marcas", label: "Marcas", icon: Boxes, group: "Catálogo", ready: true },
