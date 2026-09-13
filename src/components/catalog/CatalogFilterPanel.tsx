@@ -100,11 +100,6 @@ export function CatalogFilterPanel({
         )}
       </fieldset>
 
-      {!hasPrices && (
-        <p className="text-xs text-muted-foreground">
-          Filtro por faixa de preço fica disponível quando houver produtos com preço cadastrado.
-        </p>
-      )}
     </div>
   );
 }

@@ -1,5 +1,5 @@
 import { ChevronLeft, ChevronRight, PawPrint } from "lucide-react";
-import { useState } from "react";
+import { useState, type KeyboardEvent } from "react";
 
 import { cn } from "@/lib/utils";
 import type { Product } from "@/types/catalog";
@@ -26,15 +26,30 @@ export function ProductGallery({ product }: { product: Product }) {
   }
 
   const go = (delta: number) => setIndex((i) => (i + delta + images.length) % images.length);
+  const handleKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
+    if (event.key === "ArrowLeft") {
+      event.preventDefault();
+      go(-1);
+    } else if (event.key === "ArrowRight") {
+      event.preventDefault();
+      go(1);
+    } else if (event.key === "Escape" && zoom) {
+      event.preventDefault();
+      setZoom(false);
+    }
+  };
 
   return (
-    <div className="flex flex-col gap-3">
+    <div className="flex flex-col gap-3" onKeyDown={handleKeyDown}>
       <div className="surface-card relative overflow-hidden">
         <button
           type="button"
           onClick={() => setZoom((z) => !z)}
           aria-label={zoom ? "Reduzir imagem" : "Ampliar imagem"}
-          className="block w-full cursor-zoom-in focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
+          className={cn(
+            "block w-full focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none",
+            zoom ? "cursor-zoom-out" : "cursor-zoom-in",
+          )}
         >
           <img
             src={current.url}
@@ -44,7 +59,7 @@ export function ProductGallery({ product }: { product: Product }) {
             decoding="async"
             className={cn(
               "aspect-square w-full bg-secondary object-cover transition-transform duration-300",
-              zoom && "scale-150",
+               zoom && "scale-150 object-center",
             )}
           />
         </button>

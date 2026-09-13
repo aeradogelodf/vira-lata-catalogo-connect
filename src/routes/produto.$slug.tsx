@@ -145,7 +145,10 @@ function ProductPage() {
 
   const category = categories.find((c) => c.id === product.categoryId);
   const brand = brands.find((b) => b.id === product.brandId);
-  const related = relatedProducts(product, products);
+  const visibleProducts = store.catalog.hideOutOfStock
+    ? products.filter((item) => item.isAvailable)
+    : products;
+  const related = relatedProducts(product, visibleProducts);
   const promo = isPromotion(product);
   const price = product.promoPrice ?? product.price;
 
@@ -159,10 +162,10 @@ function ProductPage() {
         <span className="text-foreground">{product.name}</span>
       </nav>
 
-      <div className="grid gap-8 lg:grid-cols-2">
+      <div className="grid gap-8 border-t border-border pt-6 lg:grid-cols-2 lg:gap-12">
         <ProductGallery product={product} />
 
-        <div>
+        <div className="lg:pt-4">
           <div className="flex flex-wrap gap-2">
             {promo && (
               <Badge className="bg-warning text-warning-foreground hover:bg-warning">
@@ -180,7 +183,7 @@ function ProductPage() {
               {brand.name}
             </p>
           )}
-          <h1 className="mt-1 text-2xl sm:text-3xl">{product.name}</h1>
+          <h1 className="page-heading mt-1">{product.name}</h1>
 
           {price !== null ? (
             <p className="mt-4 flex items-baseline gap-3">
@@ -223,7 +226,7 @@ function ProductPage() {
       </div>
 
       {related.length > 0 && (
-        <section className="mt-12" aria-labelledby="relacionados">
+        <section className="mt-14 border-t border-border pt-10" aria-labelledby="relacionados">
           <h2 id="relacionados" className="text-xl sm:text-2xl">
             Você também pode gostar
           </h2>

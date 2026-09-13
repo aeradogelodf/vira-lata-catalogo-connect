@@ -17,7 +17,6 @@ import { useStore } from "@/hooks/use-store";
 import { bannerQueries } from "@/lib/banners-queries";
 import { buildIndexes } from "@/lib/catalog";
 import { catalogQueries } from "@/lib/catalog-queries";
-import { serviceQueries } from "@/lib/services-queries";
 import { SITE_URL } from "@/lib/site";
 import { storeQueries } from "@/lib/store-queries";
 import { formatAddress, type StoreInfo } from "@/lib/store-settings";
@@ -31,7 +30,6 @@ export const Route = createFileRoute("/")({
       context.queryClient.ensureQueryData(bannerQueries.public()),
       context.queryClient.ensureQueryData(catalogQueries.categories()),
       context.queryClient.ensureQueryData(catalogQueries.products()),
-      context.queryClient.ensureQueryData(serviceQueries.public()),
     ]);
     return store;
   },
@@ -82,7 +80,6 @@ function Index() {
   const { data: banners } = useSuspenseQuery(bannerQueries.public());
   const { data: categories } = useSuspenseQuery(catalogQueries.categories());
   const { data: products } = useSuspenseQuery(catalogQueries.products());
-  useSuspenseQuery(serviceQueries.public());
 
   const indexes = buildIndexes(categories, []);
   const featured = products.filter((product) => product.isFeatured).slice(0, 8);
