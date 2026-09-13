@@ -5,6 +5,7 @@ import { FavoriteButton } from "@/components/catalog/FavoriteButton";
 import { ProductImage } from "@/components/catalog/ProductImage";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { useStore } from "@/hooks/use-store";
 import { formatPrice, isPromotion } from "@/lib/catalog";
 import { whatsappMessages, whatsappUrl } from "@/lib/whatsapp";
 import type { Brand, Category, Product } from "@/types/catalog";
@@ -18,11 +19,12 @@ export function ProductCard({
   category?: Category | undefined;
   brand?: Brand | undefined;
 }) {
+  const store = useStore();
   const promo = isPromotion(product);
   const price = product.promoPrice ?? product.price;
 
   return (
-    <article className="surface-card group relative flex flex-col overflow-hidden">
+    <article className="surface-card group relative flex flex-col overflow-hidden transition-[box-shadow,border-color,transform] duration-300 hover:-translate-y-0.5 hover:border-primary/25 hover:shadow-lg">
       <div className="relative">
         <Link
           to="/produto/$slug"
@@ -47,7 +49,7 @@ export function ProductCard({
         />
       </div>
 
-      <div className="flex flex-1 flex-col gap-1 p-3">
+      <div className="flex flex-1 flex-col gap-1 p-4">
         {(brand ?? category) && (
           <p className="text-[11px] font-semibold tracking-wide text-muted-foreground uppercase">
             {brand?.name ?? category?.name}
@@ -81,7 +83,7 @@ export function ProductCard({
 
         <Button asChild variant="whatsapp" size="sm" className="mt-3 w-full">
           <a
-            href={whatsappUrl(whatsappMessages.product(product.name))}
+            href={whatsappUrl(whatsappMessages.product(product.name, store), store)}
             target="_blank"
             rel="noopener noreferrer"
             aria-label={`Falar no WhatsApp sobre ${product.name}`}

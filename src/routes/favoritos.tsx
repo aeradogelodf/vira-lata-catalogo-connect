@@ -6,9 +6,11 @@ import { EmptyState } from "@/components/catalog/EmptyState";
 import { ProductCard, ProductCardSkeleton } from "@/components/catalog/ProductCard";
 import { Button } from "@/components/ui/button";
 import { useFavorites } from "@/hooks/use-favorites";
+import { useStore } from "@/hooks/use-store";
 import { catalogQueries } from "@/lib/catalog-queries";
 import { SITE_URL } from "@/lib/site";
 import { whatsappMessages, whatsappUrl } from "@/lib/whatsapp";
+import { storeQueries } from "@/lib/store-queries";
 
 export const Route = createFileRoute("/favoritos")({
   loader: async ({ context }) => {
@@ -16,6 +18,7 @@ export const Route = createFileRoute("/favoritos")({
       context.queryClient.ensureQueryData(catalogQueries.products()),
       context.queryClient.ensureQueryData(catalogQueries.categories()),
       context.queryClient.ensureQueryData(catalogQueries.brands()),
+      context.queryClient.ensureQueryData(storeQueries.settings()),
     ]);
   },
   head: () => ({
@@ -31,6 +34,7 @@ export const Route = createFileRoute("/favoritos")({
       { property: "og:type", content: "website" },
       { property: "og:url", content: `${SITE_URL}/favoritos` },
       { name: "robots", content: "noindex" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
     links: [{ rel: "canonical", href: `${SITE_URL}/favoritos` }],
   }),
@@ -39,6 +43,7 @@ export const Route = createFileRoute("/favoritos")({
 
 function FavoritosPage() {
   const { ids, hydrated, clear } = useFavorites();
+  const store = useStore();
   const { data: products } = useSuspenseQuery(catalogQueries.products());
   const { data: categories } = useSuspenseQuery(catalogQueries.categories());
   const { data: brands } = useSuspenseQuery(catalogQueries.brands());
@@ -46,8 +51,9 @@ function FavoritosPage() {
   const favorites = products.filter((product) => ids.includes(product.id));
 
   return (
-    <div className="container-page py-8 sm:py-10">
-      <h1 className="text-2xl sm:text-3xl">Favoritos</h1>
+    <div className="container-page py-8 sm:py-12">
+      <p className="section-kicker">Sua seleção</p>
+      <h1 className="page-heading mt-1">Favoritos</h1>
       <p className="mt-2 text-muted-foreground">
         Sua lista de interesse fica salva neste dispositivo. Não é um pedido.
       </p>
@@ -78,7 +84,10 @@ function FavoritosPage() {
             </p>
             <Button asChild variant="whatsapp">
               <a
-                href={whatsappUrl(whatsappMessages.favorites(favorites.map((p) => p.name)))}
+                href={whatsappUrl(
+                  whatsappMessages.favorites(favorites.map((p) => p.name), store),
+                  store,
+                )}
                 target="_blank"
                 rel="noopener noreferrer"
               >

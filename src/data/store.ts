@@ -3,7 +3,6 @@
  * Registro único; se ainda não existir, devolve o fallback técnico.
  */
 import { supabase } from "@/integrations/supabase/client";
-import { setActiveStore } from "@/lib/whatsapp";
 import {
   FALLBACK_STORE,
   WEEK_DAYS,
@@ -80,8 +79,5 @@ export async function fetchStoreSettings(): Promise<StoreInfo> {
     .maybeSingle();
 
   if (error) throw error;
-  const store = data ? mapStoreRow(data as Row) : FALLBACK_STORE;
-  // Mantém as mensagens de WhatsApp sincronizadas sem duplicar lógica.
-  setActiveStore(store);
-  return store;
+  return data ? mapStoreRow(data as Row) : FALLBACK_STORE;
 }
