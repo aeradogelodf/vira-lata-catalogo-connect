@@ -19,6 +19,7 @@ import {
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { useStore } from "@/hooks/use-store";
 import { catalogQueries } from "@/lib/catalog-queries";
+import { storeQueries } from "@/lib/store-queries";
 import {
   applyCatalog,
   buildIndexes,
@@ -37,6 +38,7 @@ export const Route = createFileRoute("/catalogo")({
       context.queryClient.ensureQueryData(catalogQueries.products()),
       context.queryClient.ensureQueryData(catalogQueries.categories()),
       context.queryClient.ensureQueryData(catalogQueries.brands()),
+      context.queryClient.ensureQueryData(storeQueries.settings()),
     ]);
   },
   pendingComponent: CatalogPending,
@@ -119,6 +121,10 @@ function CatalogoPage() {
     () => applyCatalog(products, state, indexes),
     [products, state, indexes],
   );
+  const categoryCountProducts = useMemo(
+    () => applyCatalog(products, { ...state, categorySlug: null, sort: "relevance" }, indexes),
+    [products, state, indexes],
+  );
 
   const hasPrices = products.some((p) => p.price !== null || p.promoPrice !== null);
   const hasPromotions = products.some(isPromotion);
@@ -146,12 +152,15 @@ function CatalogoPage() {
   );
 
   return (
-    <div className="container-page py-8 sm:py-10">
-      <header>
-        <h1 className="text-2xl sm:text-3xl">Catálogo {store.name}</h1>
+    <div className="container-page py-8 sm:py-12">
+      <header className="border-b border-border pb-7 sm:flex sm:items-end sm:justify-between sm:gap-8">
+        <div>
+        <p className="section-kicker">Vitrine digital</p>
+        <h1 className="page-heading mt-1">Catálogo {store.name}</h1>
         <p className="mt-2 max-w-2xl text-muted-foreground">
           Encontre produtos para cuidar melhor do seu pet e fale com a loja pelo WhatsApp.
         </p>
+        </div>
       </header>
 
       <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:items-center">
@@ -166,7 +175,7 @@ function CatalogoPage() {
             onChange={(event) => patch({ search: event.target.value })}
             placeholder="Buscar por produto, marca ou categoria"
             aria-label="Buscar no catálogo"
-            className="pl-9"
+            className="h-11 bg-card pl-9 shadow-sm"
           />
           {state.search && (
             <button
@@ -228,22 +237,22 @@ function CatalogoPage() {
       )}
 
       {categories.length > 0 && (
-        <section className="mt-6" aria-labelledby="categorias">
-          <h2 id="categorias" className="text-lg">
+        <section className="mt-7 border-y border-border py-5" aria-labelledby="categorias">
+          <h2 id="categorias" className="section-kicker">
             Categorias
           </h2>
           <ul className="mt-3 flex gap-2 overflow-x-auto pb-1">
             {categories.map((category) => {
               const active = state.categorySlug === category.slug;
-              const count = products.filter((p) => p.categoryId === category.id).length;
+              const count = categoryCountProducts.filter((p) => p.categoryId === category.id).length;
               return (
                 <li key={category.id}>
                   <button
                     type="button"
                     aria-pressed={active}
                     onClick={() => patch({ categorySlug: active ? null : category.slug })}
-                    className={`surface-card whitespace-nowrap px-3 py-2 text-sm font-semibold ${
-                      active ? "border-primary text-primary" : "text-foreground"
+                    className={`whitespace-nowrap rounded-md border px-3 py-2 text-sm font-semibold transition-colors ${
+                      active ? "border-primary bg-primary text-primary-foreground" : "border-border bg-card text-foreground hover:border-primary/40"
                     }`}
                   >
                     {category.name}
@@ -256,9 +265,9 @@ function CatalogoPage() {
         </section>
       )}
 
-      <div className="mt-8 grid gap-8 lg:grid-cols-[16rem_1fr]">
+      <div className="mt-8 grid gap-8 lg:grid-cols-[15rem_1fr]">
         <aside className="hidden lg:block" aria-label="Filtros do catálogo">
-          {filterPanel}
+          <div className="admin-panel sticky top-20 p-5">{filterPanel}</div>
         </aside>
 
         <section aria-live="polite">
@@ -268,11 +277,22 @@ function CatalogoPage() {
             </p>
           )}
 
-          {products.length === 0 ? (
+          {allProducts.length === 0 ? (
             <EmptyState
               icon={<PackageSearch className="size-8 text-muted-foreground" aria-hidden />}
               title="Nenhum produto cadastrado ainda"
               description="Os produtos aparecerão aqui assim que forem cadastrados no painel administrativo."
+              action={
+                <Button asChild variant="outline">
+                  <Link to="/contato">Falar com a loja</Link>
+                </Button>
+              }
+            />
+          ) : products.length === 0 ? (
+            <EmptyState
+              icon={<PackageSearch className="size-8 text-muted-foreground" aria-hidden />}
+              title="Produtos temporariamente indisponíveis"
+              description="Os itens cadastrados estão sem disponibilidade no momento. Fale com a loja para consultar reposição."
               action={
                 <Button asChild variant="outline">
                   <Link to="/contato">Falar com a loja</Link>
@@ -295,7 +315,7 @@ function CatalogoPage() {
               }
             />
           ) : (
-            <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-3 xl:grid-cols-4">
+            <div className="grid grid-cols-2 gap-4 lg:grid-cols-3 xl:grid-cols-4">
               {results.map((product) => (
                 <ProductCard
                   key={product.id}

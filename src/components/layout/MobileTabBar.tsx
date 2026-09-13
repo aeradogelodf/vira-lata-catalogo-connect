@@ -2,6 +2,7 @@ import { Link } from "@tanstack/react-router";
 import { Heart, Home, MessageCircle, Store } from "lucide-react";
 
 import { whatsappMessages, whatsappUrl } from "@/lib/whatsapp";
+import { useStore } from "@/hooks/use-store";
 
 const items = [
   { to: "/", label: "Início", icon: Home, exact: true },
@@ -10,6 +11,7 @@ const items = [
 ] as const;
 
 export function MobileTabBar() {
+  const store = useStore();
   return (
     <nav
       aria-label="Navegação rápida"
@@ -31,7 +33,7 @@ export function MobileTabBar() {
         ))}
         <li>
           <a
-            href={whatsappUrl(whatsappMessages.general())}
+            href={whatsappUrl(whatsappMessages.general(store), store)}
             target="_blank"
             rel="noopener noreferrer"
             className="flex flex-col items-center gap-1 py-2 text-[11px] font-medium text-whatsapp"
