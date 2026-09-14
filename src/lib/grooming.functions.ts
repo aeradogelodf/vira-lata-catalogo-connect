@@ -18,6 +18,11 @@ async function assertAdmin(context: Ctx) {
 }
 
 const idInput = z.object({ id: z.string().uuid() });
+const versionedToggle = idInput.extend({
+  value: z.boolean(),
+  expectedUpdatedAt: z.string().optional(),
+});
+const CONFLICT = "Registro alterado por outro administrador. Recarregue a lista antes de continuar.";
 
 const SIZE_FIELDS = "id, name, slug, description, sort_order, active, updated_at";
 const PRICING_FIELDS =
@@ -66,7 +71,13 @@ export const listPetSizesAdmin = createServerFn({ method: "POST" })
 export const savePetSize = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((data: unknown) =>
-    z.object({ id: z.string().uuid().optional(), values: petSizeFormSchema }).parse(data),
+    z
+      .object({
+        id: z.string().uuid().optional(),
+        expectedUpdatedAt: z.string().optional(),
+        values: petSizeFormSchema,
+      })
+      .parse(data),
   )
   .handler(async ({ data, context }): Promise<{ id: string }> => {
     await assertAdmin(context);
@@ -107,21 +118,29 @@ export const savePetSize = createServerFn({ method: "POST" })
       return { id: inserted.id };
     }
 
-    const { error } = await supabase.from("pet_sizes").update(payload).eq("id", data.id);
-    if (error) throw new Error("Não foi possível salvar as alterações do porte.");
+    let update = supabase.from("pet_sizes").update(payload).eq("id", data.id);
+    if (data.expectedUpdatedAt) update = update.eq("updated_at", data.expectedUpdatedAt);
+    const { data: updated, error } = await update.select("id");
+    if (error) {
+      throw new Error("Não foi possível salvar as alterações do porte.", { cause: error });
+    }
+    if ((updated ?? []).length === 0) throw new Error(CONFLICT);
     return { id: data.id };
   });
 
 export const togglePetSize = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((data: unknown) => idInput.extend({ value: z.boolean() }).parse(data))
+  .inputValidator((data: unknown) => versionedToggle.parse(data))
   .handler(async ({ data, context }): Promise<{ ok: true }> => {
     await assertAdmin(context);
-    const { error } = await context.supabase
+    let update = context.supabase
       .from("pet_sizes")
       .update({ active: data.value })
       .eq("id", data.id);
-    if (error) throw new Error("Não foi possível atualizar o porte.");
+    if (data.expectedUpdatedAt) update = update.eq("updated_at", data.expectedUpdatedAt);
+    const { data: updated, error } = await update.select("id");
+    if (error) throw new Error("Não foi possível atualizar o porte.", { cause: error });
+    if ((updated ?? []).length === 0) throw new Error(CONFLICT);
     return { ok: true };
   });
 
@@ -163,7 +182,13 @@ export const listServicePricingAdmin = createServerFn({ method: "POST" })
 export const saveServicePricing = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((data: unknown) =>
-    z.object({ id: z.string().uuid().optional(), values: servicePricingFormSchema }).parse(data),
+    z
+      .object({
+        id: z.string().uuid().optional(),
+        expectedUpdatedAt: z.string().optional(),
+        values: servicePricingFormSchema,
+      })
+      .parse(data),
   )
   .handler(async ({ data, context }): Promise<{ id: string }> => {
     await assertAdmin(context);
@@ -202,21 +227,27 @@ export const saveServicePricing = createServerFn({ method: "POST" })
       return { id: inserted.id };
     }
 
-    const { error } = await supabase.from("service_pricing").update(payload).eq("id", data.id);
-    if (error) throw new Error("Não foi possível salvar as alterações.");
+    let update = supabase.from("service_pricing").update(payload).eq("id", data.id);
+    if (data.expectedUpdatedAt) update = update.eq("updated_at", data.expectedUpdatedAt);
+    const { data: updated, error } = await update.select("id");
+    if (error) throw new Error("Não foi possível salvar as alterações.", { cause: error });
+    if ((updated ?? []).length === 0) throw new Error(CONFLICT);
     return { id: data.id };
   });
 
 export const toggleServicePricing = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((data: unknown) => idInput.extend({ value: z.boolean() }).parse(data))
+  .inputValidator((data: unknown) => versionedToggle.parse(data))
   .handler(async ({ data, context }): Promise<{ ok: true }> => {
     await assertAdmin(context);
-    const { error } = await context.supabase
+    let update = context.supabase
       .from("service_pricing")
       .update({ active: data.value })
       .eq("id", data.id);
-    if (error) throw new Error("Não foi possível atualizar a combinação.");
+    if (data.expectedUpdatedAt) update = update.eq("updated_at", data.expectedUpdatedAt);
+    const { data: updated, error } = await update.select("id");
+    if (error) throw new Error("Não foi possível atualizar a combinação.", { cause: error });
+    if ((updated ?? []).length === 0) throw new Error(CONFLICT);
     return { ok: true };
   });
 

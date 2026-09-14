@@ -16,6 +16,7 @@ const idInput = z.object({ id: z.string().uuid() });
 const toggleInput = idInput.extend({
   field: z.enum(["active", "featured"]),
   value: z.boolean(),
+  expectedUpdatedAt: z.string().optional(),
 });
 const reorderInput = z.object({ order: z.array(z.string().uuid()).min(1).max(200) });
 
@@ -58,7 +59,7 @@ export const listServicesAdmin = createServerFn({ method: "POST" })
       .order("name", { ascending: true });
 
     if (data.search) {
-      const term = `%${data.search.replace(/[%_]/g, "")}%`;
+      const term = `%${data.search.replace(/[%_,()]/g, "")}%`;
       query = query.or(`name.ilike.${term},slug.ilike.${term}`);
     }
 
@@ -120,13 +121,20 @@ export const toggleServiceFlag = createServerFn({ method: "POST" })
   .inputValidator((data: unknown) => toggleInput.parse(data))
   .handler(async ({ data, context }): Promise<{ ok: true }> => {
     await assertAdmin(context);
-    const { error } = await context.supabase
+    let update = context.supabase
       .from("services")
       .update(
         data.field === "active" ? { active: data.value } : { featured: data.value },
       )
       .eq("id", data.id);
-    if (error) throw new Error("Não foi possível atualizar o serviço.");
+    if (data.expectedUpdatedAt) update = update.eq("updated_at", data.expectedUpdatedAt);
+    const { data: updated, error } = await update.select("id");
+    if (error) throw new Error("Não foi possível atualizar o serviço.", { cause: error });
+    if ((updated ?? []).length === 0) {
+      throw new Error(
+        "Este serviço foi alterado por outro administrador. Recarregue a lista antes de continuar.",
+      );
+    }
     return { ok: true };
   });
 
