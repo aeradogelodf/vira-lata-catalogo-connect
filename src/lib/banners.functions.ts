@@ -13,7 +13,10 @@ const saveInput = z.object({
 });
 
 const idInput = z.object({ id: z.string().uuid() });
-const toggleInput = idInput.extend({ value: z.boolean() });
+const toggleInput = idInput.extend({
+  value: z.boolean(),
+  expectedUpdatedAt: z.string().optional(),
+});
 const reorderInput = z.object({ order: z.array(z.string().uuid()).min(1).max(200) });
 
 type Ctx = { supabase: any; userId: string };
@@ -55,7 +58,7 @@ export const listBannersAdmin = createServerFn({ method: "POST" })
       .order("title", { ascending: true });
 
     if (data.search) {
-      const term = `%${data.search.replace(/[%_]/g, "")}%`;
+      const term = `%${data.search.replace(/[%_,()]/g, "")}%`;
       query = query.or(`title.ilike.${term},subtitle.ilike.${term}`);
     }
 
@@ -112,11 +115,15 @@ export const toggleBannerActive = createServerFn({ method: "POST" })
   .inputValidator((data: unknown) => toggleInput.parse(data))
   .handler(async ({ data, context }): Promise<{ ok: true }> => {
     await assertAdmin(context);
-    const { error } = await context.supabase
-      .from("banners")
-      .update({ active: data.value })
-      .eq("id", data.id);
-    if (error) throw new Error("Não foi possível atualizar o banner.");
+    let update = context.supabase.from("banners").update({ active: data.value }).eq("id", data.id);
+    if (data.expectedUpdatedAt) update = update.eq("updated_at", data.expectedUpdatedAt);
+    const { data: updated, error } = await update.select("id");
+    if (error) throw new Error("Não foi possível atualizar o banner.", { cause: error });
+    if ((updated ?? []).length === 0) {
+      throw new Error(
+        "Este banner foi alterado por outro administrador. Recarregue a lista antes de continuar.",
+      );
+    }
     return { ok: true };
   });
 
