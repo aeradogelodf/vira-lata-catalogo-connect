@@ -116,7 +116,8 @@ export function BannersManager() {
   }, [banners]);
 
   const toggleMutation = useMutation({
-    mutationFn: (input: { id: string; value: boolean }) => toggle({ data: input }),
+    mutationFn: (input: { id: string; value: boolean; expectedUpdatedAt?: string }) =>
+      toggle({ data: input }),
     onSuccess: invalidate,
     onError: (error) => toast.error(message(error)),
   });
@@ -237,7 +238,11 @@ export function BannersManager() {
                     <Switch
                       checked={banner.active}
                       onCheckedChange={(value) =>
-                        toggleMutation.mutate({ id: banner.id, value })
+                        toggleMutation.mutate({
+                          id: banner.id,
+                          value,
+                          expectedUpdatedAt: banner.updatedAt,
+                        })
                       }
                       aria-label={`Exibir ${banner.title} na página inicial`}
                     />
