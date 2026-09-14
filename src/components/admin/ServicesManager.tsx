@@ -106,8 +106,12 @@ export function ServicesManager() {
   }
 
   const toggleMutation = useMutation({
-    mutationFn: (input: { id: string; field: "active" | "featured"; value: boolean }) =>
-      toggle({ data: input }),
+    mutationFn: (input: {
+      id: string;
+      field: "active" | "featured";
+      value: boolean;
+      expectedUpdatedAt?: string;
+    }) => toggle({ data: input }),
     onSuccess: invalidate,
     onError: (error) => toast.error(message(error)),
   });

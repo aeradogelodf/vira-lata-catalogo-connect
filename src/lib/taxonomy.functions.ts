@@ -49,7 +49,7 @@ export const listTaxonomy = createServerFn({ method: "POST" })
       .order("name", { ascending: true });
 
     if (data.search) {
-      const term = `%${data.search.replace(/[%_]/g, "")}%`;
+      const term = `%${data.search.replace(/[%_,()]/g, "")}%`;
       query = query.or(`name.ilike.${term},slug.ilike.${term}`);
     }
 

@@ -121,7 +121,8 @@ function PetSizesPanel() {
   }
 
   const toggleMutation = useMutation({
-    mutationFn: (input: { id: string; value: boolean }) => toggle({ data: input }),
+    mutationFn: (input: { id: string; value: boolean; expectedUpdatedAt?: string }) =>
+      toggle({ data: input }),
     onSuccess: invalidate,
     onError: (error) => toast.error(message(error)),
   });
@@ -184,7 +185,13 @@ function PetSizesPanel() {
                 <label className="flex items-center gap-2 text-xs text-muted-foreground">
                   <Switch
                     checked={size.active}
-                    onCheckedChange={(value) => toggleMutation.mutate({ id: size.id, value })}
+                    onCheckedChange={(value) =>
+                      toggleMutation.mutate({
+                        id: size.id,
+                        value,
+                        expectedUpdatedAt: size.updatedAt,
+                      })
+                    }
                     aria-label={`Ativar o porte ${size.name}`}
                   />
                   {size.active ? "Ativo" : "Inativo"}
@@ -267,7 +274,13 @@ function PetSizeFormDialog({
 
   const mutation = useMutation({
     mutationFn: (values: PetSizeFormValues) =>
-      save({ data: { id: size?.id, values: petSizeFormSchema.parse(values) } }),
+      save({
+        data: {
+          id: size?.id,
+          ...(size ? { expectedUpdatedAt: size.updatedAt } : {}),
+          values: petSizeFormSchema.parse(values),
+        },
+      }),
     onSuccess: () => {
       toast.success(size ? "Porte atualizado." : "Porte cadastrado.");
       onSaved();
@@ -408,7 +421,8 @@ function PricingPanel() {
   }
 
   const toggleMutation = useMutation({
-    mutationFn: (input: { id: string; value: boolean }) => toggle({ data: input }),
+    mutationFn: (input: { id: string; value: boolean; expectedUpdatedAt?: string }) =>
+      toggle({ data: input }),
     onSuccess: invalidate,
     onError: (error) => toast.error(message(error)),
   });
@@ -502,7 +516,11 @@ function PricingPanel() {
                       <Switch
                         checked={row.pricing.active}
                         onCheckedChange={(value) =>
-                          toggleMutation.mutate({ id: row.pricing!.id, value })
+                          toggleMutation.mutate({
+                            id: row.pricing!.id,
+                            value,
+                            expectedUpdatedAt: row.pricing!.updatedAt,
+                          })
                         }
                         aria-label={`Disponibilizar ${row.service.name} para o porte ${row.size.name}`}
                       />
@@ -554,7 +572,13 @@ function PricingPanel() {
               <label className="flex items-center gap-2 text-xs text-muted-foreground">
                 <Switch
                   checked={row.pricing.active}
-                  onCheckedChange={(value) => toggleMutation.mutate({ id: row.pricing!.id, value })}
+                  onCheckedChange={(value) =>
+                    toggleMutation.mutate({
+                      id: row.pricing!.id,
+                      value,
+                      expectedUpdatedAt: row.pricing!.updatedAt,
+                    })
+                  }
                   aria-label={`Disponibilizar ${row.service.name} para o porte ${row.size.name}`}
                 />
                 {row.pricing.active ? "Disponível" : "Indisponível"}
