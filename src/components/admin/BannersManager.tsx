@@ -157,7 +157,8 @@ export function BannersManager() {
     <div className="space-y-6">
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
-          <h1 className="text-2xl">Banners</h1>
+          <p className="section-kicker">Página inicial</p>
+          <h1 className="page-heading">Banners</h1>
           <p className="mt-1 text-sm text-muted-foreground">
             Campanhas visuais exibidas no carrossel da página inicial.
           </p>
@@ -342,6 +343,7 @@ function BannerFormDialog({
   const save = useServerFn(saveBanner);
   const [uploading, setUploading] = useState(false);
   const [preview, setPreview] = useState<string | null>(null);
+  const [uploadedPath, setUploadedPath] = useState<string | null>(null);
 
   const form = useForm<BannerFormValues>({
     resolver: zodResolver(bannerFormSchema) as never,
@@ -373,8 +375,14 @@ function BannerFormDialog({
           values: bannerFormSchema.parse(values),
         },
       }),
-    onSuccess: () => {
+    onSuccess: async () => {
+      const originalPath = banner?.imageUrl;
+      const currentPath = form.getValues("imageUrl");
+      if (originalPath && originalPath !== currentPath && !/^https?:/.test(originalPath)) {
+        await supabase.storage.from(PRODUCT_IMAGE_BUCKET).remove([originalPath]);
+      }
       toast.success(banner ? "Banner atualizado." : "Banner criado.");
+      setUploadedPath(null);
       onSaved();
       onClose();
     },
@@ -398,6 +406,10 @@ function BannerFormDialog({
         .from(PRODUCT_IMAGE_BUCKET)
         .upload(path, file, { upsert: false, contentType: file.type });
       if (error) throw new Error(error.message);
+      if (uploadedPath) {
+        await supabase.storage.from(PRODUCT_IMAGE_BUCKET).remove([uploadedPath]);
+      }
+      setUploadedPath(path);
       form.setValue("imageUrl", path, { shouldDirty: true });
       toast.success("Imagem enviada.");
     } catch (error) {
@@ -409,10 +421,18 @@ function BannerFormDialog({
 
   async function removeImage() {
     const current = form.getValues("imageUrl");
-    if (current && !/^https?:/.test(current)) {
+    if (current && current === uploadedPath) {
       await supabase.storage.from(PRODUCT_IMAGE_BUCKET).remove([current]);
+      setUploadedPath(null);
     }
     form.setValue("imageUrl", "", { shouldDirty: true });
+  }
+
+  async function handleClose() {
+    if (uploadedPath) {
+      await supabase.storage.from(PRODUCT_IMAGE_BUCKET).remove([uploadedPath]);
+    }
+    onClose();
   }
 
   const linkHint: Record<BannerLinkType, string> = {
@@ -425,7 +445,7 @@ function BannerFormDialog({
   };
 
   return (
-    <Dialog open onOpenChange={(open) => !open && onClose()}>
+    <Dialog open onOpenChange={(open) => !open && void handleClose()}>
       <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-lg">
         <DialogHeader>
           <DialogTitle>{banner ? "Editar banner" : "Novo banner"}</DialogTitle>
@@ -557,7 +577,7 @@ function BannerFormDialog({
           </div>
 
           <DialogFooter>
-            <Button type="button" variant="outline" onClick={onClose}>
+            <Button type="button" variant="outline" onClick={() => void handleClose()}>
               Cancelar
             </Button>
             <Button type="submit" disabled={mutation.isPending || uploading}>

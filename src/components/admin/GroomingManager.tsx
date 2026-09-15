@@ -71,7 +71,8 @@ export function GroomingManager() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl">Banho &amp; Tosa</h1>
+        <p className="section-kicker">Operação</p>
+        <h1 className="page-heading">Banho &amp; Tosa</h1>
         <p className="mt-1 text-sm text-muted-foreground">
           Serviços, portes e a combinação serviço + porte com preço e duração.
         </p>
@@ -516,10 +517,11 @@ function PricingPanel() {
                       <Switch
                         checked={row.pricing.active}
                         onCheckedChange={(value) =>
+                          row.pricing &&
                           toggleMutation.mutate({
-                            id: row.pricing!.id,
+                            id: row.pricing.id,
                             value,
-                            expectedUpdatedAt: row.pricing!.updatedAt,
+                            expectedUpdatedAt: row.pricing.updatedAt,
                           })
                         }
                         aria-label={`Disponibilizar ${row.service.name} para o porte ${row.size.name}`}
@@ -573,10 +575,11 @@ function PricingPanel() {
                 <Switch
                   checked={row.pricing.active}
                   onCheckedChange={(value) =>
+                    row.pricing &&
                     toggleMutation.mutate({
-                      id: row.pricing!.id,
+                      id: row.pricing.id,
                       value,
-                      expectedUpdatedAt: row.pricing!.updatedAt,
+                      expectedUpdatedAt: row.pricing.updatedAt,
                     })
                   }
                   aria-label={`Disponibilizar ${row.service.name} para o porte ${row.size.name}`}
@@ -653,7 +656,13 @@ function PricingFormDialog({
 
   const mutation = useMutation({
     mutationFn: (values: ServicePricingFormValues) =>
-      save({ data: { id: row.pricing?.id, values: servicePricingFormSchema.parse(values) } }),
+      save({
+        data: {
+          id: row.pricing?.id,
+          ...(row.pricing ? { expectedUpdatedAt: row.pricing.updatedAt } : {}),
+          values: servicePricingFormSchema.parse(values),
+        },
+      }),
     onSuccess: () => {
       toast.success("Configuração salva.");
       onSaved();

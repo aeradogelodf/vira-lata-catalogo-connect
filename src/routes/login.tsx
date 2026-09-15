@@ -9,7 +9,6 @@ import { Label } from "@/components/ui/label";
 import { supabase } from "@/integrations/supabase/client";
 
 export const Route = createFileRoute("/login")({
-  ssr: false,
   head: () => ({
     meta: [
       { title: "Entrar no painel — Agropet Vira Lata" },

@@ -138,7 +138,8 @@ export function ServicesManager() {
     if (target < 0 || target >= rows.length) return;
     const order = rows.map((service) => service.id);
     const [moved] = order.splice(index, 1);
-    order.splice(target, 0, moved!);
+    if (!moved) return;
+    order.splice(target, 0, moved);
     reorderMutation.mutate(order);
   }
 
@@ -151,7 +152,8 @@ export function ServicesManager() {
     <div className="space-y-6">
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
-          <h1 className="text-2xl">Serviços</h1>
+          <p className="section-kicker">Banho & Tosa</p>
+          <h1 className="page-heading">Serviços</h1>
           <p className="mt-1 text-sm text-muted-foreground">
             Banho e tosa e demais serviços exibidos na página pública.
           </p>
@@ -352,6 +354,7 @@ function ServiceFormDialog({
   const [uploading, setUploading] = useState(false);
   const [preview, setPreview] = useState<string | null>(null);
   const [slugTouched, setSlugTouched] = useState(Boolean(service));
+  const [uploadedPath, setUploadedPath] = useState<string | null>(null);
 
   const form = useForm<ServiceFormValues>({
     resolver: zodResolver(serviceFormSchema) as never,
@@ -382,8 +385,14 @@ function ServiceFormDialog({
           values: serviceFormSchema.parse(values),
         },
       }),
-    onSuccess: () => {
+    onSuccess: async () => {
+      const originalPath = service?.imageUrl;
+      const currentPath = form.getValues("imageUrl");
+      if (originalPath && originalPath !== currentPath && !/^https?:/.test(originalPath)) {
+        await supabase.storage.from(PRODUCT_IMAGE_BUCKET).remove([originalPath]);
+      }
       toast.success(service ? "Serviço atualizado." : "Serviço criado.");
+      setUploadedPath(null);
       onSaved();
       onClose();
     },
@@ -407,6 +416,10 @@ function ServiceFormDialog({
         .from(PRODUCT_IMAGE_BUCKET)
         .upload(path, file, { upsert: false, contentType: file.type });
       if (error) throw new Error(error.message);
+      if (uploadedPath) {
+        await supabase.storage.from(PRODUCT_IMAGE_BUCKET).remove([uploadedPath]);
+      }
+      setUploadedPath(path);
       form.setValue("imageUrl", path, { shouldDirty: true });
       toast.success("Imagem enviada.");
     } catch (error) {
@@ -418,14 +431,22 @@ function ServiceFormDialog({
 
   async function removeImage() {
     const current = form.getValues("imageUrl");
-    if (current && !/^https?:/.test(current)) {
+    if (current && current === uploadedPath) {
       await supabase.storage.from(PRODUCT_IMAGE_BUCKET).remove([current]);
+      setUploadedPath(null);
     }
     form.setValue("imageUrl", "", { shouldDirty: true });
   }
 
+  async function handleClose() {
+    if (uploadedPath) {
+      await supabase.storage.from(PRODUCT_IMAGE_BUCKET).remove([uploadedPath]);
+    }
+    onClose();
+  }
+
   return (
-    <Dialog open onOpenChange={(open) => !open && onClose()}>
+    <Dialog open onOpenChange={(open) => !open && void handleClose()}>
       <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-lg">
         <DialogHeader>
           <DialogTitle>{service ? "Editar serviço" : "Novo serviço"}</DialogTitle>
@@ -573,7 +594,7 @@ function ServiceFormDialog({
           </div>
 
           <DialogFooter>
-            <Button type="button" variant="outline" onClick={onClose}>
+            <Button type="button" variant="outline" onClick={() => void handleClose()}>
               Cancelar
             </Button>
             <Button type="submit" disabled={mutation.isPending || uploading}>

@@ -154,7 +154,8 @@ export function ProductManager() {
     <div className="space-y-5">
       <header className="flex flex-wrap items-end justify-between gap-3">
         <div>
-          <h1 className="font-display text-2xl font-bold">Produtos</h1>
+          <p className="section-kicker">Catálogo</p>
+          <h1 className="page-heading">Produtos</h1>
           <p className="text-sm text-muted-foreground">
             {total === 0 ? "Nenhum produto cadastrado" : `${total} produto(s) cadastrado(s)`} — o
             atendimento continua sendo feito pelo WhatsApp.
