@@ -519,92 +519,39 @@ export type Database = {
       }
     }
     Views: {
-      store_settings_public: {
-        Row: {
-          city: string | null
-          complement: string | null
-          country: string | null
-          district: string | null
-          email: string | null
-          facebook_url: string | null
-          hide_out_of_stock: boolean | null
-          instagram_url: string | null
-          long_description: string | null
-          name: string | null
-          number: string | null
-          opening_hours: Json | null
-          other_social_url: string | null
-          phone: string | null
-          postal_code: string | null
-          segment: string | null
-          short_description: string | null
-          state: string | null
-          street: string | null
-          tiktok_url: string | null
-          trade_name: string | null
-          updated_at: string | null
-          website_url: string | null
-          whatsapp_display: string | null
-          whatsapp_e164: string | null
-        }
-        Insert: {
-          city?: string | null
-          complement?: string | null
-          country?: string | null
-          district?: string | null
-          email?: string | null
-          facebook_url?: string | null
-          hide_out_of_stock?: boolean | null
-          instagram_url?: string | null
-          long_description?: string | null
-          name?: string | null
-          number?: string | null
-          opening_hours?: Json | null
-          other_social_url?: string | null
-          phone?: string | null
-          postal_code?: string | null
-          segment?: string | null
-          short_description?: string | null
-          state?: string | null
-          street?: string | null
-          tiktok_url?: string | null
-          trade_name?: string | null
-          updated_at?: string | null
-          website_url?: string | null
-          whatsapp_display?: string | null
-          whatsapp_e164?: string | null
-        }
-        Update: {
-          city?: string | null
-          complement?: string | null
-          country?: string | null
-          district?: string | null
-          email?: string | null
-          facebook_url?: string | null
-          hide_out_of_stock?: boolean | null
-          instagram_url?: string | null
-          long_description?: string | null
-          name?: string | null
-          number?: string | null
-          opening_hours?: Json | null
-          other_social_url?: string | null
-          phone?: string | null
-          postal_code?: string | null
-          segment?: string | null
-          short_description?: string | null
-          state?: string | null
-          street?: string | null
-          tiktok_url?: string | null
-          trade_name?: string | null
-          updated_at?: string | null
-          website_url?: string | null
-          whatsapp_display?: string | null
-          whatsapp_e164?: string | null
-        }
-        Relationships: []
-      }
+      [_ in never]: never
     }
     Functions: {
+      get_public_store_settings: {
+        Args: never
+        Returns: {
+          city: string
+          complement: string
+          country: string
+          district: string
+          email: string
+          facebook_url: string
+          hide_out_of_stock: boolean
+          instagram_url: string
+          long_description: string
+          name: string
+          number: string
+          opening_hours: Json
+          other_social_url: string
+          phone: string
+          postal_code: string
+          segment: string
+          short_description: string
+          state: string
+          street: string
+          tiktok_url: string
+          trade_name: string
+          updated_at: string
+          website_url: string
+          whatsapp_display: string
+          whatsapp_e164: string
+        }[]
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
