@@ -231,7 +231,12 @@ export function ServicesManager() {
                     <Switch
                       checked={service.active}
                       onCheckedChange={(value) =>
-                        toggleMutation.mutate({ id: service.id, field: "active", value })
+                        toggleMutation.mutate({
+                          id: service.id,
+                          field: "active",
+                          value,
+                          expectedUpdatedAt: service.updatedAt,
+                        })
                       }
                       aria-label={`Exibir ${service.name} no site`}
                     />
