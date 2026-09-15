@@ -653,7 +653,13 @@ function PricingFormDialog({
 
   const mutation = useMutation({
     mutationFn: (values: ServicePricingFormValues) =>
-      save({ data: { id: row.pricing?.id, values: servicePricingFormSchema.parse(values) } }),
+      save({
+        data: {
+          id: row.pricing?.id,
+          ...(row.pricing ? { expectedUpdatedAt: row.pricing.updatedAt } : {}),
+          values: servicePricingFormSchema.parse(values),
+        },
+      }),
     onSuccess: () => {
       toast.success("Configuração salva.");
       onSaved();

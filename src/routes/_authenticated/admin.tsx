@@ -66,7 +66,7 @@ function AdminLayout() {
   if (isError || !data?.isAdmin) {
     return (
       <div className="container-page py-16">
-        <div className="surface-card mx-auto max-w-lg p-8 text-center">
+        <div className="admin-panel mx-auto max-w-lg p-8 text-center">
           <ShieldAlert className="mx-auto size-8 text-destructive" aria-hidden />
           <h1 className="mt-3 font-display text-xl font-bold">Acesso negado</h1>
           <p className="mt-2 text-sm text-muted-foreground">
@@ -171,14 +171,14 @@ function AdminLayout() {
   const currentLabel = adminNavLabel(currentSlug);
 
   return (
-    <div className="min-h-[calc(100vh-4rem)] bg-muted/40">
-      <div className="container-page flex gap-6 py-6">
+    <div className="min-h-[calc(100vh-4rem)] bg-muted/30">
+      <div className="container-page flex gap-6 py-8">
         <aside className="hidden w-60 shrink-0 lg:block">
-          <div className="surface-card sticky top-20 p-3">{nav}</div>
+          <div className="admin-panel sticky top-20 p-3">{nav}</div>
         </aside>
 
         <div className="min-w-0 flex-1">
-          <header className="surface-card mb-4 flex flex-wrap items-center gap-3 p-3">
+          <header className="admin-panel mb-6 flex flex-wrap items-center gap-3 p-3">
             <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
               <SheetTrigger asChild>
                 <Button variant="outline" size="icon" className="lg:hidden" aria-label="Abrir menu do painel">
