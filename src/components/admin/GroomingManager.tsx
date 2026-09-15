@@ -71,7 +71,8 @@ export function GroomingManager() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl">Banho &amp; Tosa</h1>
+        <p className="section-kicker">Operação</p>
+        <h1 className="page-heading">Banho &amp; Tosa</h1>
         <p className="mt-1 text-sm text-muted-foreground">
           Serviços, portes e a combinação serviço + porte com preço e duração.
         </p>
