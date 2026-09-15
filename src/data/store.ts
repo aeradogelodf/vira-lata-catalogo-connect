@@ -2,7 +2,7 @@
  * Leitura pública das configurações da loja (`store_settings`).
  * Registro único; se ainda não existir, devolve o fallback técnico.
  */
-import { supabase } from "@/integrations/supabase/client";
+import { createServerFn } from "@tanstack/react-start";
 import {
   FALLBACK_STORE,
   WEEK_DAYS,
@@ -70,14 +70,18 @@ export function mapStoreRow(row: Row): StoreInfo {
   };
 }
 
-export async function fetchStoreSettings(): Promise<StoreInfo> {
-  const { data, error } = await supabase
-    // Visão pública: expõe apenas as colunas institucionais do catálogo.
-    .from("store_settings_public")
-    .select(FIELDS)
-    .limit(1)
-    .maybeSingle();
+export const fetchStoreSettings = createServerFn({ method: "GET" }).handler(
+  async (): Promise<StoreInfo> => {
+    // A tabela completa nunca é consultada pelo navegador. O servidor devolve
+    // somente os campos institucionais usados pelo catálogo público.
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { data, error } = await supabaseAdmin
+      .from("store_settings")
+      .select(FIELDS)
+      .limit(1)
+      .maybeSingle();
 
-  if (error) throw error;
-  return data ? mapStoreRow(data as Row) : FALLBACK_STORE;
-}
+    if (error) throw new Error("Não foi possível carregar as informações da loja.");
+    return data ? mapStoreRow(data as Row) : FALLBACK_STORE;
+  },
+);
