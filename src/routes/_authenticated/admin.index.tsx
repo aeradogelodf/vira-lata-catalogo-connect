@@ -9,10 +9,14 @@ export const Route = createFileRoute("/_authenticated/admin/")({
 
 function Metric({ label, value }: { label: string; value: number | null }) {
   return (
-    <div className="surface-card p-4">
+    <div className="admin-panel p-4">
       <p className="text-xs font-semibold tracking-wide text-muted-foreground uppercase">{label}</p>
-      <p className="mt-1 font-display text-2xl font-bold">
-        {value === null ? <span className="text-sm text-muted-foreground">Sem dados ainda</span> : value}
+      <p className="mt-2 font-display text-3xl font-bold tabular-nums">
+        {value === null ? (
+          <span className="text-sm font-medium text-muted-foreground">Sem dados ainda</span>
+        ) : (
+          value
+        )}
       </p>
     </div>
   );
@@ -23,10 +27,11 @@ function AdminDashboard() {
   const counts = data?.counts ?? null;
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       <div>
-        <h1 className="font-display text-2xl font-bold">Central de Controle</h1>
-        <p className="text-sm text-muted-foreground">
+        <p className="section-kicker">Painel</p>
+        <h1 className="page-heading">Central de Controle</h1>
+        <p className="mt-1 text-sm text-muted-foreground">
           Indicadores reais do catálogo. Nenhum dado é simulado.
         </p>
       </div>
@@ -44,8 +49,9 @@ function AdminDashboard() {
           <Metric label="Marcas" value={counts?.brands ?? null} />
         </div>
         {counts?.products === 0 && (
-          <p className="surface-card p-4 text-sm text-muted-foreground">
-            Você ainda não possui produtos cadastrados. O cadastro será liberado na próxima etapa.
+          <p className="admin-panel p-4 text-sm text-muted-foreground">
+            Você ainda não possui produtos cadastrados. Use o módulo “Produtos” no menu lateral para
+            cadastrar o primeiro item.
           </p>
         )}
       </section>
@@ -54,7 +60,7 @@ function AdminDashboard() {
         <h2 id="operacao-heading" className="flex items-center gap-2 text-sm font-bold">
           <Boxes className="size-4 text-info" aria-hidden /> Operação
         </h2>
-        <div className="surface-card p-4 text-sm text-muted-foreground">
+        <div className="admin-panel p-4 text-sm text-muted-foreground">
           Pedidos, clientes, promoções e relatórios: sem dados ainda. Estes módulos serão
           configurados nas próximas etapas.
         </div>
@@ -64,7 +70,7 @@ function AdminDashboard() {
         <h2 id="sessao-heading" className="flex items-center gap-2 text-sm font-bold">
           <Tags className="size-4 text-info" aria-hidden /> Sessão
         </h2>
-        <div className="surface-card p-4 text-sm">
+        <div className="admin-panel p-4 text-sm">
           <p>
             Conectado como <span className="font-semibold">{data?.email ?? "—"}</span>
           </p>
