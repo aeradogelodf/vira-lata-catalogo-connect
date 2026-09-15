@@ -251,6 +251,7 @@ export function ServicesManager() {
                         id: service.id,
                         field: "featured",
                         value: !service.featured,
+                        expectedUpdatedAt: service.updatedAt,
                       })
                     }
                   >
