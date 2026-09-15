@@ -61,8 +61,7 @@ function AdminDashboard() {
           <Boxes className="size-4 text-info" aria-hidden /> Operação
         </h2>
         <div className="admin-panel p-4 text-sm text-muted-foreground">
-          Pedidos, clientes, promoções e relatórios: sem dados ainda. Estes módulos serão
-          configurados nas próximas etapas.
+          Pedidos, clientes, promoções e relatórios permanecem como módulos futuros.
         </div>
       </section>
 

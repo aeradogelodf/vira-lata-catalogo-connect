@@ -61,11 +61,12 @@ function AdminProfile() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="font-display text-2xl font-bold">Meu perfil</h1>
+        <p className="section-kicker">Sistema</p>
+        <h1 className="page-heading">Meu perfil</h1>
         <p className="text-sm text-muted-foreground">Dados da sua conta administrativa.</p>
       </div>
 
-      <div className="surface-card space-y-3 p-4 text-sm">
+      <div className="admin-panel space-y-3 p-4 text-sm">
         <div>
           <p className="text-xs font-semibold text-muted-foreground uppercase">E-mail</p>
           <p>{data?.email ?? "—"}</p>

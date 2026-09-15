@@ -126,7 +126,8 @@ export function StoreSettingsManager() {
   return (
     <form onSubmit={onSubmit} className="space-y-5 pb-24">
       <header>
-        <h1 className="font-display text-2xl font-bold">Configurações da loja</h1>
+        <p className="section-kicker">Sistema</p>
+        <h1 className="page-heading">Configurações da loja</h1>
         <p className="mt-1 text-sm text-muted-foreground">
           Estas informações alimentam o catálogo público: home, contato, rodapé, WhatsApp e SEO.
         </p>
