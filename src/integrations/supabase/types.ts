@@ -522,36 +522,6 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      get_public_store_settings: {
-        Args: never
-        Returns: {
-          city: string
-          complement: string
-          country: string
-          district: string
-          email: string
-          facebook_url: string
-          hide_out_of_stock: boolean
-          instagram_url: string
-          long_description: string
-          name: string
-          number: string
-          opening_hours: Json
-          other_social_url: string
-          phone: string
-          postal_code: string
-          segment: string
-          short_description: string
-          state: string
-          street: string
-          tiktok_url: string
-          trade_name: string
-          updated_at: string
-          website_url: string
-          whatsapp_display: string
-          whatsapp_e164: string
-        }[]
-      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
