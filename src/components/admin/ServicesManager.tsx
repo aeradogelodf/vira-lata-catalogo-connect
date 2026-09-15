@@ -385,7 +385,12 @@ function ServiceFormDialog({
           values: serviceFormSchema.parse(values),
         },
       }),
-    onSuccess: () => {
+    onSuccess: async () => {
+      const originalPath = service?.imageUrl;
+      const currentPath = form.getValues("imageUrl");
+      if (originalPath && originalPath !== currentPath && !/^https?:/.test(originalPath)) {
+        await supabase.storage.from(PRODUCT_IMAGE_BUCKET).remove([originalPath]);
+      }
       toast.success(service ? "Serviço atualizado." : "Serviço criado.");
       setUploadedPath(null);
       onSaved();

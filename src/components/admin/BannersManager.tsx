@@ -375,7 +375,12 @@ function BannerFormDialog({
           values: bannerFormSchema.parse(values),
         },
       }),
-    onSuccess: () => {
+    onSuccess: async () => {
+      const originalPath = banner?.imageUrl;
+      const currentPath = form.getValues("imageUrl");
+      if (originalPath && originalPath !== currentPath && !/^https?:/.test(originalPath)) {
+        await supabase.storage.from(PRODUCT_IMAGE_BUCKET).remove([originalPath]);
+      }
       toast.success(banner ? "Banner atualizado." : "Banner criado.");
       setUploadedPath(null);
       onSaved();
