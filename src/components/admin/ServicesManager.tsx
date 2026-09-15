@@ -138,7 +138,8 @@ export function ServicesManager() {
     if (target < 0 || target >= rows.length) return;
     const order = rows.map((service) => service.id);
     const [moved] = order.splice(index, 1);
-    order.splice(target, 0, moved!);
+    if (!moved) return;
+    order.splice(target, 0, moved);
     reorderMutation.mutate(order);
   }
 

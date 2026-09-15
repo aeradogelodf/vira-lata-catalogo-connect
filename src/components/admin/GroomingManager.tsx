@@ -516,10 +516,11 @@ function PricingPanel() {
                       <Switch
                         checked={row.pricing.active}
                         onCheckedChange={(value) =>
+                          row.pricing &&
                           toggleMutation.mutate({
-                            id: row.pricing!.id,
+                            id: row.pricing.id,
                             value,
-                            expectedUpdatedAt: row.pricing!.updatedAt,
+                            expectedUpdatedAt: row.pricing.updatedAt,
                           })
                         }
                         aria-label={`Disponibilizar ${row.service.name} para o porte ${row.size.name}`}
@@ -573,10 +574,11 @@ function PricingPanel() {
                 <Switch
                   checked={row.pricing.active}
                   onCheckedChange={(value) =>
+                    row.pricing &&
                     toggleMutation.mutate({
-                      id: row.pricing!.id,
+                      id: row.pricing.id,
                       value,
-                      expectedUpdatedAt: row.pricing!.updatedAt,
+                      expectedUpdatedAt: row.pricing.updatedAt,
                     })
                   }
                   aria-label={`Disponibilizar ${row.service.name} para o porte ${row.size.name}`}
