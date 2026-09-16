@@ -1,7 +1,11 @@
-# Roadmap
+# Roadmap — M01 Estoque Inteligente
 
-- [x] Auditar catálogo público, painel administrativo e arquitetura compartilhada
-- [x] Priorizar e implementar correções e otimizações reais
-- [x] Validar fluxos públicos, administrativos, responsividade e console
-- [x] Revisar segurança e qualidade do banco sem alterar escopo funcional
-- [x] Entregar relatório completo e organizado do projeto
+- [ ] Auditar estoque, catálogo, painel, permissões e padrões existentes
+- [ ] Definir estrutura sem duplicar dados existentes
+- [ ] Criar histórico transacional e políticas seguras
+- [ ] Implementar funções administrativas de estoque
+- [ ] Implementar Central de Estoque e abas operacionais
+- [ ] Integrar navegação mantendo o catálogo inalterado
+- [ ] Validar entrada, saída, ajuste, inventário, alertas e CSV
+- [ ] Validar catálogo, mobile e console
+- [ ] Consolidar relatório final
