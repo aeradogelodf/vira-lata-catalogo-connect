@@ -137,6 +137,59 @@ export type Database = {
         }
         Relationships: []
       }
+      inventory_movements: {
+        Row: {
+          created_at: string
+          current_stock: number
+          id: string
+          movement_type: string
+          performed_by: string | null
+          performed_by_email: string | null
+          previous_stock: number
+          product_id: string | null
+          product_internal_code: string
+          product_name: string
+          quantity: number
+          reason: string | null
+        }
+        Insert: {
+          created_at?: string
+          current_stock: number
+          id?: string
+          movement_type: string
+          performed_by?: string | null
+          performed_by_email?: string | null
+          previous_stock: number
+          product_id?: string | null
+          product_internal_code: string
+          product_name: string
+          quantity: number
+          reason?: string | null
+        }
+        Update: {
+          created_at?: string
+          current_stock?: number
+          id?: string
+          movement_type?: string
+          performed_by?: string | null
+          performed_by_email?: string | null
+          previous_stock?: number
+          product_id?: string | null
+          product_internal_code?: string
+          product_name?: string
+          quantity?: number
+          reason?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "inventory_movements_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       pet_sizes: {
         Row: {
           active: boolean
@@ -522,6 +575,35 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      apply_inventory_movement: {
+        Args: {
+          p_expected_updated_at?: string
+          p_movement_type: string
+          p_product_id: string
+          p_quantity: number
+          p_reason?: string
+        }
+        Returns: {
+          created_at: string
+          current_stock: number
+          id: string
+          movement_type: string
+          performed_by: string | null
+          performed_by_email: string | null
+          previous_stock: number
+          product_id: string | null
+          product_internal_code: string
+          product_name: string
+          quantity: number
+          reason: string | null
+        }
+        SetofOptions: {
+          from: "*"
+          to: "inventory_movements"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
