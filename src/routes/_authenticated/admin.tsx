@@ -133,6 +133,15 @@ function AdminLayout() {
                         <Icon className="size-4" aria-hidden />
                         {item.label}
                       </Link>
+                    ) : item.slug === "estoque" ? (
+                      <Link
+                        to="/admin/estoque"
+                        className={className}
+                        onClick={() => setMobileOpen(false)}
+                      >
+                        <Icon className="size-4" aria-hidden />
+                        {item.label}
+                      </Link>
                     ) : item.slug === "perfil" ? (
                       <Link
                         to="/admin/perfil"
