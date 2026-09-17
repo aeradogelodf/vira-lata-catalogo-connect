@@ -1,3 +1,6 @@
+@@
+-  { slug: "estoque", label: "Estoque", icon: Warehouse, group: "Catálogo", ready: false },
++  { slug: "estoque", label: "Estoque", icon: Warehouse, group: "Catálogo", ready: true },
 import {
   BadgePercent,
   Boxes,
