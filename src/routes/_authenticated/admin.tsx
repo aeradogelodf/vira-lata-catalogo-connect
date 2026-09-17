@@ -1,18 +1,3 @@
-@@
-                     ) : item.slug === "marcas" ? (
-@@
-                         {item.label}
-                       </Link>
-+                    ) : item.slug === "estoque" ? (
-+                      <Link
-+                        to="/admin/estoque"
-+                        className={className}
-+                        onClick={() => setMobileOpen(false)}
-+                      >
-+                        <Icon className="size-4" aria-hidden />
-+                        {item.label}
-+                      </Link>
-                     ) : item.slug === "perfil" ? (
 import { createFileRoute, Link, Outlet, useNavigate, useRouterState } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
@@ -142,6 +127,15 @@ function AdminLayout() {
                     ) : item.slug === "marcas" ? (
                       <Link
                         to="/admin/marcas"
+                        className={className}
+                        onClick={() => setMobileOpen(false)}
+                      >
+                        <Icon className="size-4" aria-hidden />
+                        {item.label}
+                      </Link>
+                    ) : item.slug === "estoque" ? (
+                      <Link
+                        to="/admin/estoque"
                         className={className}
                         onClick={() => setMobileOpen(false)}
                       >
