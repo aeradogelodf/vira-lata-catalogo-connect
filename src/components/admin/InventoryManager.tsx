@@ -49,7 +49,7 @@ function Metric({ label, value, detail }: { label: string; value: string | numbe
   return (
     <div className="admin-panel min-w-0 p-4">
       <p className="text-xs font-semibold text-muted-foreground uppercase">{label}</p>
-      <p className="mt-2 truncate font-display text-2xl font-bold tabular-nums" title={String(value)}>{value}</p>
+      <p className="mt-2 break-words font-display text-xl font-bold tabular-nums sm:text-2xl">{value}</p>
       {detail && <p className="mt-1 text-xs text-muted-foreground">{detail}</p>}
     </div>
   );

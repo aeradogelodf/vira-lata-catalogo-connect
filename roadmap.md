@@ -6,6 +6,6 @@
 - [x] Implementar funções administrativas de estoque
 - [x] Implementar Central de Estoque e abas operacionais
 - [x] Integrar navegação mantendo o catálogo inalterado
-- [ ] Validar entrada, saída, ajuste, inventário, alertas e CSV
-- [ ] Validar catálogo, mobile e console
-- [ ] Consolidar relatório final
+- [x] Validar entrada, saída, ajuste, inventário, alertas e CSV
+- [x] Validar catálogo, mobile e console
+- [x] Consolidar relatório final
