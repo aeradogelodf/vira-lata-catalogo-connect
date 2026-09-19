@@ -14,7 +14,7 @@ export const inventoryMovementInputSchema = z.object({
   movementType: inventoryMovementTypeSchema,
   quantity: z.number().int().min(0).max(1_000_000),
   reason: z.string().trim().max(300).optional(),
-  expectedUpdatedAt: z.string().datetime(),
+  expectedUpdatedAt: z.string().datetime({ offset: true }),
 }).superRefine((value, context) => {
   if ((value.movementType === "entry" || value.movementType === "exit") && value.quantity < 1) {
     context.addIssue({ code: z.ZodIssueCode.custom, path: ["quantity"], message: "Informe uma quantidade maior que zero." });
