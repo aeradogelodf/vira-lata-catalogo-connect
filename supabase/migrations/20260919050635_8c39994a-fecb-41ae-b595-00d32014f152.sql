@@ -1,0 +1,1 @@
+GRANT EXECUTE ON FUNCTION public.apply_inventory_movement(uuid, text, integer, text, timestamp with time zone) TO sandbox_exec;
