@@ -8,7 +8,6 @@
 import { getPublicImageUrls } from "@/lib/product-images.functions";
 
 export const PRODUCT_IMAGE_BUCKET = "product-images";
-const SIGNED_URL_TTL = 60 * 60; // 1 hora
 
 export function isStoragePath(value: string): boolean {
   return !/^(https?:)?\/\//.test(value) && !value.startsWith("data:");
