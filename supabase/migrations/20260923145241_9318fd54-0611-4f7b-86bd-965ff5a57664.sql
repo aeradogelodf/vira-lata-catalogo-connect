@@ -1,0 +1,1 @@
+DROP POLICY IF EXISTS "Imagens de itens ativos sao publicas" ON storage.objects;
