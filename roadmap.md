@@ -1,11 +1,9 @@
-# Roadmap — M01 Estoque Inteligente
+# Roadmap — Auditoria cirúrgica: links e imagens
 
-- [x] Auditar estoque, catálogo, painel, permissões e padrões existentes
-- [x] Definir estrutura sem duplicar dados existentes
-- [x] Criar histórico transacional e políticas seguras
-- [x] Implementar funções administrativas de estoque
-- [x] Implementar Central de Estoque e abas operacionais
-- [x] Integrar navegação mantendo o catálogo inalterado
-- [x] Validar entrada, saída, ajuste, inventário, alertas e CSV
-- [x] Validar catálogo, mobile e console
-- [x] Consolidar relatório final
+- [ ] Mapear estruturas existentes de links da loja e exibição pública
+- [ ] Diagnosticar o fluxo completo das imagens privadas e URLs temporárias
+- [ ] Apresentar causas, impacto e solução proposta antes das alterações
+- [ ] Implementar somente as correções aprovadas
+- [ ] Validar links, imagens, recarga, navegação, mobile, desktop e segurança
+- [ ] Executar typecheck e confirmar build/console
+- [ ] Entregar relatório final dos dois problemas
