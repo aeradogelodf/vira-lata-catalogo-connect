@@ -15,9 +15,7 @@ function sameAs(store: StoreInfo): string[] {
   return [
     store.socials.instagram,
     store.socials.facebook,
-    store.socials.tiktok,
-    store.socials.website,
-    store.socials.other,
+    ...store.socials.extra.map((link) => link.url),
   ].filter((url): url is string => Boolean(url));
 }
 
@@ -57,7 +55,6 @@ export function localBusinessJsonLd(store: StoreInfo): Record<string, unknown> {
       : {}),
     ...(hours.length > 0 ? { openingHoursSpecification: hours } : {}),
     ...(links.length > 0 ? { sameAs: links } : {}),
-    ...(store.socials.website ? { url: store.socials.website } : {}),
   };
 
   return data;

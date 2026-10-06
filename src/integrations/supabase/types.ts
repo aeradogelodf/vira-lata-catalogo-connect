@@ -464,6 +464,7 @@ export type Database = {
           created_at: string
           district: string | null
           email: string | null
+          extra_links: Json
           facebook_url: string | null
           hide_out_of_stock: boolean
           id: string
@@ -494,6 +495,7 @@ export type Database = {
           created_at?: string
           district?: string | null
           email?: string | null
+          extra_links?: Json
           facebook_url?: string | null
           hide_out_of_stock?: boolean
           id?: string
@@ -524,6 +526,7 @@ export type Database = {
           created_at?: string
           district?: string | null
           email?: string | null
+          extra_links?: Json
           facebook_url?: string | null
           hide_out_of_stock?: boolean
           id?: string

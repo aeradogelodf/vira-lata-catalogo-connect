@@ -3,7 +3,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { useForm, useFieldArray, type UseFormReturn } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Loader2, RotateCcw, Save } from "lucide-react";
+import { Facebook, Instagram, Loader2, Plus, RotateCcw, Save, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
@@ -96,6 +96,7 @@ export function StoreSettingsManager() {
   });
 
   const hours = useFieldArray({ control: form.control, name: "openingHours" });
+  const links = useFieldArray({ control: form.control, name: "extraLinks" });
 
   useEffect(() => {
     if (store) form.reset(toFormValues(store));
@@ -217,13 +218,97 @@ export function StoreSettingsManager() {
         </div>
       </section>
 
-      <Section title="Redes sociais" description="Opcional. Informe a URL completa.">
-        <Field form={form} name="instagramUrl" label="Instagram" placeholder="https://instagram.com/..." />
-        <Field form={form} name="facebookUrl" label="Facebook" placeholder="https://facebook.com/..." />
-        <Field form={form} name="tiktokUrl" label="TikTok" placeholder="https://tiktok.com/@..." />
-        <Field form={form} name="websiteUrl" label="Site" placeholder="https://..." />
-        <Field form={form} name="otherSocialUrl" label="Outro link" placeholder="https://..." />
-      </Section>
+      <section className="surface-card p-5 sm:p-6">
+        <h2 className="font-display text-lg font-bold">Redes sociais</h2>
+        <p className="mt-1 text-sm text-muted-foreground">
+          Opcional. Deixe em branco a rede que a loja não utiliza.
+        </p>
+        <div className="mt-4 grid gap-4 sm:grid-cols-2">
+          {(
+            [
+              ["instagramUrl", "Instagram", "https://instagram.com/...", Instagram],
+              ["facebookUrl", "Facebook", "https://facebook.com/...", Facebook],
+            ] as const
+          ).map(([name, label, placeholder, Icon]) => {
+            const error = form.formState.errors[name]?.message as string | undefined;
+            return (
+              <div key={name} className="space-y-1.5">
+                <Label htmlFor={name} className="flex items-center gap-2">
+                  <Icon className="size-4 text-primary" aria-hidden /> {label}
+                </Label>
+                <Input id={name} type="url" placeholder={placeholder} {...form.register(name)} />
+                {error && <p className="text-xs text-destructive">{error}</p>}
+              </div>
+            );
+          })}
+        </div>
+      </section>
+
+      <section className="surface-card p-5 sm:p-6">
+        <div className="flex flex-wrap items-start justify-between gap-3">
+          <div>
+            <h2 className="font-display text-lg font-bold">Outros Links</h2>
+            <p className="mt-1 text-sm text-muted-foreground">
+              Site oficial, cardápio, avaliações ou qualquer outro endereço. O nome aparece para o cliente.
+            </p>
+          </div>
+          <Button
+            type="button"
+            variant="outline"
+            onClick={() => links.append({ label: "", url: "" })}
+            disabled={links.fields.length >= 20}
+          >
+            <Plus /> Outros Links
+          </Button>
+        </div>
+        {links.fields.length === 0 ? (
+          <p className="mt-4 rounded-lg border border-dashed border-border p-4 text-center text-sm text-muted-foreground">
+            Nenhum link adicional cadastrado.
+          </p>
+        ) : (
+          <ul className="mt-4 space-y-3">
+            {links.fields.map((field, index) => {
+              const errors = form.formState.errors.extraLinks?.[index];
+              return (
+                <li
+                  key={field.id}
+                  className="grid gap-3 rounded-lg border border-border p-3 sm:grid-cols-[1fr_2fr_auto] sm:items-start"
+                >
+                  <div className="space-y-1.5">
+                    <Label htmlFor={`link-label-${index}`} className="text-xs">Nome</Label>
+                    <Input
+                      id={`link-label-${index}`}
+                      placeholder="Site oficial"
+                      {...form.register(`extraLinks.${index}.label`)}
+                    />
+                    {errors?.label && <p className="text-xs text-destructive">{errors.label.message}</p>}
+                  </div>
+                  <div className="space-y-1.5">
+                    <Label htmlFor={`link-url-${index}`} className="text-xs">URL</Label>
+                    <Input
+                      id={`link-url-${index}`}
+                      type="url"
+                      placeholder="https://..."
+                      {...form.register(`extraLinks.${index}.url`)}
+                    />
+                    {errors?.url && <p className="text-xs text-destructive">{errors.url.message}</p>}
+                  </div>
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="icon"
+                    className="sm:mt-6"
+                    aria-label={`Remover link ${index + 1}`}
+                    onClick={() => links.remove(index)}
+                  >
+                    <Trash2 className="text-destructive" />
+                  </Button>
+                </li>
+              );
+            })}
+          </ul>
+        )}
+      </section>
 
       <section className="surface-card p-5 sm:p-6">
         <h2 className="font-display text-lg font-bold">Catálogo</h2>

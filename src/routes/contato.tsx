@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { Clock, Globe, Mail, MapPin, Phone } from "lucide-react";
+import { Clock, Facebook, Globe, Instagram, Link2, Mail, MapPin, Phone } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { useStore } from "@/hooks/use-store";
@@ -47,11 +47,9 @@ function ContatoPage() {
   const store = useStore();
   const address = formatAddress(store);
   const links = [
-    { label: "Instagram", url: store.socials.instagram },
-    { label: "Facebook", url: store.socials.facebook },
-    { label: "TikTok", url: store.socials.tiktok },
-    { label: "Site", url: store.socials.website },
-    { label: "Outro link", url: store.socials.other },
+    { label: "Instagram", url: store.socials.instagram, Icon: Instagram },
+    { label: "Facebook", url: store.socials.facebook, Icon: Facebook },
+    ...store.socials.extra.map((link) => ({ label: link.label, url: link.url, Icon: Link2 })),
   ].filter((item) => Boolean(item.url));
 
   return (
@@ -119,15 +117,16 @@ function ContatoPage() {
             <h2 className="flex items-center gap-2 text-lg">
               <Globe className="size-5 text-info" aria-hidden /> Redes e links
             </h2>
-            <div className="mt-3 flex flex-wrap gap-3 text-sm">
-              {links.map((item) => (
+            <div className="mt-3 flex flex-wrap gap-2 text-sm">
+              {links.map((item, index) => (
                 <a
-                  key={item.label}
+                  key={`${item.label}-${index}`}
                   href={item.url as string}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-muted-foreground underline-offset-4 hover:underline"
+                  className="inline-flex items-center gap-2 rounded-full border border-border px-3 py-1.5 text-muted-foreground transition-colors hover:border-primary/30 hover:text-foreground"
                 >
+                  <item.Icon className="size-4" aria-hidden />
                   {item.label}
                 </a>
               ))}

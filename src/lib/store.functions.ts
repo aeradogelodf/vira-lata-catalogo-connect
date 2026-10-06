@@ -44,9 +44,11 @@ export const saveStoreSettings = createServerFn({ method: "POST" })
       })),
       instagram_url: data.instagramUrl || null,
       facebook_url: data.facebookUrl || null,
-      tiktok_url: data.tiktokUrl || null,
-      website_url: data.websiteUrl || null,
-      other_social_url: data.otherSocialUrl || null,
+      // Site, TikTok e "outro link" foram migrados para a lista extra_links.
+      tiktok_url: null,
+      website_url: null,
+      other_social_url: null,
+      extra_links: data.extraLinks.map((link) => ({ label: link.label, url: link.url })),
       hide_out_of_stock: data.hideOutOfStock,
     };
 

@@ -28,6 +28,8 @@ export type OpeningHour = {
   closesAt: string | null;
 };
 
+export type StoreLink = { label: string; url: string };
+
 export type StoreInfo = {
   name: string;
   tradeName: string | null;
@@ -51,9 +53,7 @@ export type StoreInfo = {
   socials: {
     instagram: string | null;
     facebook: string | null;
-    tiktok: string | null;
-    website: string | null;
-    other: string | null;
+    extra: StoreLink[];
   };
   catalog: { hideOutOfStock: boolean };
   updatedAt: string | null;
@@ -88,9 +88,7 @@ export const FALLBACK_STORE: StoreInfo = {
   socials: {
     instagram: STORE.socials.instagram,
     facebook: STORE.socials.facebook,
-    tiktok: null,
-    website: null,
-    other: null,
+    extra: [],
   },
   catalog: { hideOutOfStock: false },
   updatedAt: null,
@@ -202,9 +200,20 @@ export const storeSettingsSchema = z.object({
   openingHours: z.array(openingHourSchema).length(7, "Informe os sete dias da semana."),
   instagramUrl: optionalUrl,
   facebookUrl: optionalUrl,
-  tiktokUrl: optionalUrl,
-  websiteUrl: optionalUrl,
-  otherSocialUrl: optionalUrl,
+  extraLinks: z
+    .array(
+      z.object({
+        label: z.string().trim().min(1, "Informe o nome do link.").max(40, "Use no máximo 40 caracteres."),
+        url: z
+          .string()
+          .trim()
+          .max(200)
+          .refine((value) => /^https?:\/\/[^\s]+\.[^\s]+$/.test(value), {
+            message: "Informe uma URL completa iniciando com http:// ou https://.",
+          }),
+      }),
+    )
+    .max(20, "Cadastre no máximo 20 links."),
   hideOutOfStock: z.boolean(),
 });
 
@@ -245,9 +254,7 @@ export function toFormValues(store: StoreInfo): StoreSettingsParsed {
     }),
     instagramUrl: store.socials.instagram ?? "",
     facebookUrl: store.socials.facebook ?? "",
-    tiktokUrl: store.socials.tiktok ?? "",
-    websiteUrl: store.socials.website ?? "",
-    otherSocialUrl: store.socials.other ?? "",
+    extraLinks: store.socials.extra.map((link) => ({ ...link })),
     hideOutOfStock: store.catalog.hideOutOfStock,
   };
 }

@@ -1,4 +1,5 @@
 import { Link } from "@tanstack/react-router";
+import { Facebook, Instagram, Link2 } from "lucide-react";
 
 import { useStore } from "@/hooks/use-store";
 import { formatAddress } from "@/lib/store-settings";
@@ -8,11 +9,9 @@ export function SiteFooter() {
   const store = useStore();
   const address = formatAddress(store);
   const socials = [
-    { label: "Instagram", url: store.socials.instagram },
-    { label: "Facebook", url: store.socials.facebook },
-    { label: "TikTok", url: store.socials.tiktok },
-    { label: "Site", url: store.socials.website },
-    { label: "Mais", url: store.socials.other },
+    { label: "Instagram", url: store.socials.instagram, Icon: Instagram },
+    { label: "Facebook", url: store.socials.facebook, Icon: Facebook },
+    ...store.socials.extra.map((link) => ({ label: link.label, url: link.url, Icon: Link2 })),
   ].filter((item) => Boolean(item.url));
 
   return (
@@ -22,15 +21,16 @@ export function SiteFooter() {
           <p className="font-display text-lg font-bold">{store.name}</p>
           {store.segment && <p className="mt-2 text-sm text-muted-foreground">{store.segment}</p>}
           {socials.length > 0 && (
-            <nav aria-label="Redes sociais" className="mt-3 flex flex-wrap gap-3 text-sm">
-              {socials.map((item) => (
+            <nav aria-label="Redes sociais e links" className="mt-3 flex flex-wrap gap-x-4 gap-y-2 text-sm">
+              {socials.map((item, index) => (
                 <a
-                  key={item.label}
+                  key={`${item.label}-${index}`}
                   href={item.url as string}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-muted-foreground hover:text-foreground"
+                  className="inline-flex items-center gap-1.5 text-muted-foreground hover:text-foreground"
                 >
+                  <item.Icon className="size-4" aria-hidden />
                   {item.label}
                 </a>
               ))}
