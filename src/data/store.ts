@@ -12,7 +12,7 @@ import {
 } from "@/lib/store-settings";
 
 const FIELDS =
-  "name, trade_name, segment, short_description, long_description, whatsapp_e164, whatsapp_display, phone, email, street, number, complement, district, city, state, postal_code, country, opening_hours, instagram_url, facebook_url, tiktok_url, website_url, other_social_url, hide_out_of_stock, updated_at";
+  "name, trade_name, segment, short_description, long_description, whatsapp_e164, whatsapp_display, phone, email, street, number, complement, district, city, state, postal_code, country, opening_hours, instagram_url, facebook_url, extra_links, hide_out_of_stock, updated_at";
 
 type Row = Record<string, unknown>;
 
@@ -31,6 +31,15 @@ function mapHours(value: unknown): OpeningHour[] {
       opensAt: text(item?.["opensAt"]),
       closesAt: text(item?.["closesAt"]),
     };
+  });
+}
+
+function mapLinks(value: unknown) {
+  const list = Array.isArray(value) ? (value as Row[]) : [];
+  return list.flatMap((item) => {
+    const label = text(item?.["label"]);
+    const url = text(item?.["url"]);
+    return label && url && /^https?:\/\//.test(url) ? [{ label, url }] : [];
   });
 }
 
@@ -61,9 +70,7 @@ export function mapStoreRow(row: Row): StoreInfo {
     socials: {
       instagram: text(row["instagram_url"]),
       facebook: text(row["facebook_url"]),
-      tiktok: text(row["tiktok_url"]),
-      website: text(row["website_url"]),
-      other: text(row["other_social_url"]),
+      extra: mapLinks(row["extra_links"]),
     },
     catalog: { hideOutOfStock: row["hide_out_of_stock"] === true },
     updatedAt: text(row["updated_at"]),
