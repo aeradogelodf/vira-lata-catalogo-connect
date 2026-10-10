@@ -1,3 +1,4 @@
+import { StoreImage } from "@/components/catalog/StoreImage";
 import { useEffect, useState } from "react";
 import { Link } from "@tanstack/react-router";
 import Autoplay from "embla-carousel-autoplay";
@@ -51,7 +52,7 @@ export function BannerCarousel({
               <CarouselItem key={banner.id}>
                 <article className="surface-card relative overflow-hidden">
                   {banner.imageUrl ? (
-                    <img
+                    <StoreImage
                       suppressHydrationWarning
                       src={banner.imageUrl}
                       alt={banner.altText ?? banner.title}

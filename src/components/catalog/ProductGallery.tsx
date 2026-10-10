@@ -1,3 +1,4 @@
+import { StoreImage } from "@/components/catalog/StoreImage";
 import { ChevronLeft, ChevronRight, PawPrint } from "lucide-react";
 import { useState, type KeyboardEvent } from "react";
 
@@ -51,7 +52,7 @@ export function ProductGallery({ product }: { product: Product }) {
             zoom ? "cursor-zoom-out" : "cursor-zoom-in",
           )}
         >
-          <img
+          <StoreImage
             src={current.url}
             alt={current.alt ?? product.name}
             width={1000}
@@ -100,7 +101,7 @@ export function ProductGallery({ product }: { product: Product }) {
                   i === index ? "border-primary" : "border-border",
                 )}
               >
-                <img
+                <StoreImage
                   src={image.url}
                   alt=""
                   width={160}

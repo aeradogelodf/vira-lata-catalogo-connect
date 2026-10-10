@@ -1,3 +1,4 @@
+import { StoreImage } from "@/components/catalog/StoreImage";
 import { useEffect, useMemo, useState } from "react";
 import { keepPreviousData, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
@@ -307,9 +308,9 @@ export function ProductManager() {
             <li key={row.id} className="surface-card p-4">
               <div className="flex gap-4">
                 <div className="size-16 shrink-0 overflow-hidden rounded-lg bg-muted">
-                  {row.primaryImage && thumbs.get(row.primaryImage) ? (
-                    <img
-                      src={thumbs.get(row.primaryImage)}
+                  {row.primaryImage ? (
+                    <StoreImage
+                      src={thumbs.get(row.primaryImage) ?? row.primaryImage}
                       alt=""
                       loading="lazy"
                       className="size-full object-cover"
