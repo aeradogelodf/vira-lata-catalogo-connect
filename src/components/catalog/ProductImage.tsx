@@ -1,3 +1,4 @@
+import { StoreImage } from "@/components/catalog/StoreImage";
 import { PawPrint } from "lucide-react";
 
 import { cn } from "@/lib/utils";
@@ -33,7 +34,7 @@ export function ProductImage({
   }
 
   return (
-    <img
+    <StoreImage
       // O token da URL assinada é regerado a cada assinatura: o src do SSR e o
       // do cliente diferem legitimamente, sem impacto visual.
       suppressHydrationWarning

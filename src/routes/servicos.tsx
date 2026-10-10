@@ -1,3 +1,4 @@
+import { StoreImage } from "@/components/catalog/StoreImage";
 import { createFileRoute } from "@tanstack/react-router";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { CalendarClock, CheckCircle2, MessageCircle, Scissors } from "lucide-react";
@@ -173,7 +174,7 @@ function BanhoTosaPage() {
             {services.map((service) => (
               <li key={service.id} className="surface-card flex flex-col overflow-hidden">
                 {service.imageUrl ? (
-                  <img
+                  <StoreImage
                     suppressHydrationWarning
                     src={service.imageUrl}
                     alt={`Serviço ${service.name} na ${store.name}`}

@@ -1,3 +1,4 @@
+import { StoreImage } from "@/components/catalog/StoreImage";
 import { useEffect, useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
@@ -162,9 +163,9 @@ export function ProductImagesEditor({
           {images.map((image, index) => (
             <li key={image.id} className="overflow-hidden rounded-lg border border-border">
               <div className="aspect-square bg-muted">
-                {previews.get(image.imageUrl) ? (
-                  <img
-                    src={previews.get(image.imageUrl)}
+                {image.imageUrl ? (
+                  <StoreImage
+                    src={previews.get(image.imageUrl) ?? image.imageUrl}
                     alt={image.altText ?? `Imagem de ${productName}`}
                     loading="lazy"
                     className="size-full object-cover"

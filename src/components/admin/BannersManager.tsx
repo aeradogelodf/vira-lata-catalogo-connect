@@ -1,3 +1,4 @@
+import { StoreImage } from "@/components/catalog/StoreImage";
 import { useEffect, useMemo, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
@@ -208,7 +209,7 @@ export function BannersManager() {
             return (
               <li key={banner.id} className="surface-card flex flex-wrap items-center gap-4 p-4">
                 {preview ? (
-                  <img
+                  <StoreImage
                     src={preview}
                     alt={`Imagem do banner ${banner.title}`}
                     className="h-16 w-28 shrink-0 rounded-lg object-cover"
@@ -474,7 +475,7 @@ function BannerFormDialog({
           <div className="space-y-1.5">
             <Label>Imagem</Label>
             {preview && (
-              <img
+              <StoreImage
                 src={preview}
                 alt="Pré-visualização do banner"
                 className="h-32 w-full rounded-lg object-cover"

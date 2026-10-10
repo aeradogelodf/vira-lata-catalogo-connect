@@ -1,3 +1,4 @@
+import { StoreImage } from "@/components/catalog/StoreImage";
 import { useEffect, useMemo, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
@@ -203,7 +204,7 @@ export function ServicesManager() {
             return (
               <li key={service.id} className="surface-card flex flex-wrap items-center gap-4 p-4">
                 {preview ? (
-                  <img
+                  <StoreImage
                     src={preview}
                     alt={`Imagem do serviço ${service.name}`}
                     className="size-16 shrink-0 rounded-lg object-cover"
@@ -542,7 +543,7 @@ function ServiceFormDialog({
             <Label htmlFor="service-image">Imagem</Label>
             <div className="flex items-center gap-3">
               {preview ? (
-                <img
+                <StoreImage
                   src={preview}
                   alt="Pré-visualização da imagem do serviço"
                   className="size-20 rounded-lg object-cover"
