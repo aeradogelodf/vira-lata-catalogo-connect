@@ -1,5 +1,5 @@
 import { describe, expect, test } from "bun:test";
-import { FALLBACK_STORE, storeSettingsSchema, toFormValues } from "./store-settings";
+import { FALLBACK_STORE, storeSettingsSchema, toFormValues } from "../src/lib/store-settings";
 
 describe("store links", () => {
   test("Instagram and Facebook may be empty", () => {

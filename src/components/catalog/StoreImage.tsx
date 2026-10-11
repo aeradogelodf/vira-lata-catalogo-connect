@@ -66,6 +66,9 @@ export function StoreImage({ src, alt = "", className, ...props }: ImgHTMLAttrib
     setFailure({ reference, count: count + 1 });
     if (info) {
       setReplacement({ reference, url: null });
+    } else {
+      // External assets have no private path to renew; show a stable fallback.
+      setReplacement({ reference, url: null });
     }
   }} />;
 }

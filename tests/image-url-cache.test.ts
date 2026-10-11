@@ -1,5 +1,5 @@
 import { expect, test } from "bun:test";
-import { ImageUrlCache, signedImageInfo } from "./image-url-cache";
+import { ImageUrlCache, signedImageInfo } from "../src/lib/image-url-cache";
 
 test("reuse URLs until one minute before expiry", () => {
   const cache = new ImageUrlCache();
