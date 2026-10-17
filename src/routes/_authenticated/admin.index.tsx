@@ -4,6 +4,15 @@ import { Boxes, Package, Tags } from "lucide-react";
 import { useAdminSummary } from "./admin";
 
 export const Route = createFileRoute("/_authenticated/admin/")({
+  head: () => ({ meta: [
+    { title: "Central de Controle — Agropet Vira Lata" },
+    { name: "description", content: "Indicadores administrativos do catálogo Agropet Vira Lata." },
+    { property: "og:title", content: "Central de Controle — Agropet Vira Lata" },
+    { property: "og:description", content: "Indicadores administrativos do catálogo da loja." },
+    { property: "og:type", content: "website" },
+    { name: "twitter:card", content: "summary" },
+    { name: "robots", content: "noindex, nofollow" },
+  ] }),
   component: AdminDashboard,
 });
 

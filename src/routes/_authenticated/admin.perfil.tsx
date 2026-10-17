@@ -12,6 +12,15 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAdminSummary } from "./admin";
 
 export const Route = createFileRoute("/_authenticated/admin/perfil")({
+  head: () => ({ meta: [
+    { title: "Perfil administrativo — Agropet Vira Lata" },
+    { name: "description", content: "Conta e acesso administrativo da Agropet Vira Lata." },
+    { property: "og:title", content: "Perfil administrativo — Agropet Vira Lata" },
+    { property: "og:description", content: "Gerenciamento da conta administrativa da loja." },
+    { property: "og:type", content: "website" },
+    { name: "twitter:card", content: "summary" },
+    { name: "robots", content: "noindex, nofollow" },
+  ] }),
   component: AdminProfile,
 });
 
