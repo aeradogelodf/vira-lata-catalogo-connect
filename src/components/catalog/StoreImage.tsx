@@ -62,13 +62,8 @@ export function StoreImage({ src, alt = "", className, ...props }: ImgHTMLAttrib
     );
   }
   return <img {...props} src={url} alt={alt} className={className} suppressHydrationWarning onError={() => {
-    const info = signedImageInfo(url);
     setFailure({ reference, count: count + 1 });
-    if (info) {
-      setReplacement({ reference, url: null });
-    } else {
-      // External assets have no private path to renew; show a stable fallback.
-      setReplacement({ reference, url: null });
-    }
+    // Private references can renew; external assets keep a stable fallback.
+    setReplacement({ reference, url: null });
   }} />;
 }
