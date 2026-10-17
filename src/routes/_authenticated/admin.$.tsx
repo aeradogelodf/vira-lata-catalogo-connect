@@ -5,6 +5,15 @@ import { Button } from "@/components/ui/button";
 import { adminNavLabel } from "@/components/admin/admin-nav";
 
 export const Route = createFileRoute("/_authenticated/admin/$")({
+  head: () => ({ meta: [
+    { title: "Módulo administrativo — Agropet Vira Lata" },
+    { name: "description", content: "Módulos futuros do painel Agropet Vira Lata." },
+    { property: "og:title", content: "Módulo administrativo — Agropet Vira Lata" },
+    { property: "og:description", content: "Área reservada aos módulos administrativos da loja." },
+    { property: "og:type", content: "website" },
+    { name: "twitter:card", content: "summary" },
+    { name: "robots", content: "noindex, nofollow" },
+  ] }),
   component: AdminModulePlaceholder,
 });
 
